@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to the WebCourse</title>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f7f7f7;
+    }
+    .welcome-container {
+        text-align: center;
+        background-color: white;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+        color: #333;
+    }
+    .role-selection button {
+        padding: 10px 20px;
+        margin: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #5cb85c;
+        color: white;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    .role-selection button:hover {
+        background-color: #4cae4c;
+    }
+  </style>
+</head>
+<body>
+<div class="welcome-container">
+  <h1>Welcome to the WebCourse!</h1>
+  <div class="role-selection">
+    <form th:action="@{/teacher-portal}" method="post">
+      <button type="submit" name="role" value="student">I'm a Student</button>
+      <button type="submit" name="role" value="teacher">I'm a Teacher</button>
+    </form>
+  </div>
+</div>
+</body>
+</html>
