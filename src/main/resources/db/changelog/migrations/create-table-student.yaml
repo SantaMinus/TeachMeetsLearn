@@ -1,0 +1,32 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-student-table
+      author: santaminus
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: student
+      changes:
+        - createTable:
+            tableName: student
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(100)
+              - column:
+                  name: lastName
+                  type: varchar(100)
+              - column:
+                  name: birthDate
+                  type: Date
+              - column:
+                  name: dateJoined
+                  type: Date
