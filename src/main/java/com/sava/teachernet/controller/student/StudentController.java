@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/student")
 @RequiredArgsConstructor
 public class StudentController {
-  private StudentService studentService;
+
+  private final StudentService studentService;
 
   @GetMapping("/dashboard")
   public String showStudentDashboard() {
@@ -29,8 +30,11 @@ public class StudentController {
   }
 
   @GetMapping
-  public List<Student> getStudents() {
-    return studentService.getAll();
+  public String getStudents(Model model) {
+    List<Student> studentList = studentService.getAll();
+    model.addAttribute("studentList", studentList);
+
+    return "/students";
   }
 }
 
