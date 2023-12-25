@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Profile</title>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f7f7f7;
+    }
+    .profile-container {
+        text-align: center;
+        background-color: white;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+        color: #333;
+    }
+    .profile-info {
+        text-align: left;
+        margin-top: 20px;
+    }
+    .profile-info label {
+        font-weight: bold;
+    }
+    .profile-info p {
+        margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+<div class="profile-container">
+  <h1>Student Profile</h1>
+  <div class="profile-info">
+    <label>Name:</label>
+    <p th:text="${student.name}"></p>
+
+    <label>Lastname:</label>
+    <p th:text="${student.lastName}"></p>
+
+    <label>Date of Birth:</label>
+    <p th:text="${student.birthDate}"></p>
+
+    <label>Date Joined:</label>
+    <p th:text="${student.dateJoined}"></p>
+
+    <label>Courses:</label>
+    <p th:text="${student.courses}"></p>
+
+    <label>Teachers:</label>
+    <p th:text="${student.teachers}"></p>
+    <button class="edit-button" onclick="toggleForm()">Edit</button>
+
+    <div class="form-container" id="editForm">
+      <form>
+        <label for="editName">Name:</label>
+        <input type="text" id="editName" name="editName" value="" />
+
+        <label for="editLastname">Lastname:</label>
+        <input type="text" id="editLastname" name="editLastname" value="" />
+
+        <!-- Add other input fields as needed -->
+
+        <button type="button" onclick="saveChanges()">Save Changes</button>
+        <button type="button" onclick="cancelEdit()">Cancel</button>
+      </form>
+    </div>
+  </div>
+</div>
+<script th:inline="javascript">
+  function toggleForm() {
+      var formContainer = document.getElementById("editForm");
+      formContainer.style.display = formContainer.style.display === "none" ? "block" : "none";
+
+      var profileInfo = document.querySelector(".profile-info");
+      profileInfo.style.display = profileInfo.style.display === "none" ? "block" : "none";
+  }
+
+  function saveChanges() {
+      // Add logic to save changes (e.g., send an AJAX request to update the server)
+      alert("Changes saved!");
+      toggleForm(); // Hide the form after saving changes
+  }
+
+  function cancelEdit() {
+      // Add logic to cancel the edit (e.g., reset form values)
+      alert("Edit canceled!");
+      toggleForm(); // Hide the form after canceling
+  }
+</script>
+</body>
+</html>

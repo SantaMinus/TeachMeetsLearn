@@ -44,12 +44,15 @@
 <div class="dashboard-container">
   <h1>Student Dashboard</h1>
   <div class="dashboard-actions">
-    <button>View Courses</button>
-    <button>Schedule</button>
-    <button>Teachers</button>
-    <button>Gradebook</button>
-    <button>Logout</button>
+    <div class="dashboard-actions">
+      <form th:action="@{/student/profile}" method="get">
+        <button type="submit">My profile</button>
+      </form>
+      <button>Schedule</button>
+      <button>Teachers</button>
+      <button>Learning materials</button>
+      <button>Logout</button>
+    </div>
   </div>
-</div>
 </body>
 </html>
