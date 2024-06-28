@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-teacher-table
+      author: santaminus
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: teacher
+      changes:
+        - createTable:
+            tableName: teacher
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(100)
+              - column:
+                  name: lastName
+                  type: varchar(100)
+              - column:
+                  name: dateJoined
+                  type: Date

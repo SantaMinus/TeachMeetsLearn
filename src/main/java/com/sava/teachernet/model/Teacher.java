@@ -1,6 +1,8 @@
 package com.sava.teachernet.model;
 
-import java.util.List;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
@@ -9,6 +11,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 public class Teacher extends User {
-
-  private List<String> students;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private int id;
 }
