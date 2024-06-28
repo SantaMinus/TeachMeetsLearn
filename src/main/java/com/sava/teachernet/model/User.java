@@ -15,7 +15,5 @@ public class User {
 
   String name;
   String lastName;
-  LocalDate birthDate;
   LocalDate dateJoined;
-  List<String> courses;
 }

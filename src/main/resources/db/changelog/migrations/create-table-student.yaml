@@ -25,8 +25,5 @@ databaseChangeLog:
                   name: lastName
                   type: varchar(100)
               - column:
-                  name: birthDate
-                  type: Date
-              - column:
                   name: dateJoined
                   type: Date
