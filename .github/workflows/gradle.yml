@@ -16,8 +16,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
+    # permissions:
+    #   contents: read
     services:
       postgres:
         image: postgres
@@ -48,7 +48,7 @@ jobs:
 
     - run: |
         psql -h postgres -U postgres -c 'CREATE DATABASE learn'
-      
+
     - name: Make gradlew executable
       run: chmod +x ./gradlew
 
