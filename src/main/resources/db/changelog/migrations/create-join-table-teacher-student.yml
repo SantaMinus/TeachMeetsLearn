@@ -1,0 +1,27 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-teacher-student-join-table
+      author: santaminus
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: teacher_student
+      changes:
+        - createTable:
+            tableName: teacher_student
+            columns:
+              - column:
+                  name: teacher_id
+                  type: int
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_teacher_id
+                    references: teacher(id)
+              - column:
+                  name: student_id
+                  type: int
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_student_id
+                    references: student(id)
