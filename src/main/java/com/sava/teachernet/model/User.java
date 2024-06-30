@@ -24,7 +24,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class UserEntity implements UserDetails {
+public class User implements UserDetails {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,7 +37,7 @@ public class UserEntity implements UserDetails {
   @Enumerated(EnumType.STRING)
   private UserRole role;
 
-  public UserEntity(String login, String password, UserRole role) {
+  public User(String login, String password, UserRole role) {
     this.login = login;
     this.password = password;
     this.role = role;

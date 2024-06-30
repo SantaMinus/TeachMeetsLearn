@@ -4,7 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.sava.teachernet.model.UserEntity;
+import com.sava.teachernet.model.User;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -16,7 +16,7 @@ public class TokenProvider {
   @Value("${security.jwt.token.secret-key}")
   private String JWT_SECRET;
 
-  public String generateAccessToken(UserEntity user) {
+  public String generateAccessToken(User user) {
     try {
       Algorithm algorithm = Algorithm.HMAC256(JWT_SECRET);
       return JWT.create()

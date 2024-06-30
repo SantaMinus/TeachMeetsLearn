@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>LSA Parser</title>
+</head>
+<body>
+<h1>Register</h1>
+
+<form method="POST" th:action="@{/register}" id="registerForm">
+  <label for="username">Username: </label>
+  <input type="text" name="username"/><br>
+
+  <label for="password">Password: </label>
+  <input type="password" name="password"/><br>
+
+  <label for="confirm">Confirm password: </label>
+  <input type="password" name="confirm"/><br>
+
+  <p>Are you a teacher or a student?</p>
+  <input type="radio" id="student" name="role" value="student">
+  <label for="student">Student</label><br>
+  <input type="radio" id="teacher" name="role" value="teacher">
+  <label for="teacher">Teacher</label><br>
+
+  <input type="submit" value="Register"/>
+</form>
+</body>
+</html>

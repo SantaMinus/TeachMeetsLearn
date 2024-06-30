@@ -2,7 +2,7 @@ package com.sava.teachernet.service;
 
 import com.sava.teachernet.dto.SignUpDto;
 import com.sava.teachernet.exception.InvalidJwtException;
-import com.sava.teachernet.model.UserEntity;
+import com.sava.teachernet.model.User;
 import com.sava.teachernet.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,7 +26,7 @@ public class AuthService implements UserDetailsService {
       throw new InvalidJwtException("Username already exists");
     }
     String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-    UserEntity newUser = new UserEntity(data.login(), encryptedPassword, data.role());
+    User newUser = new User(data.login(), encryptedPassword, data.role());
     return repository.save(newUser);
   }
 }
