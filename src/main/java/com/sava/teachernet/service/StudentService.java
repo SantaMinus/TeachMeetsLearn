@@ -1,6 +1,6 @@
 package com.sava.teachernet.service;
 
-import com.sava.teachernet.controller.repository.StudentRepository;
+import com.sava.teachernet.repository.StudentRepository;
 import com.sava.teachernet.model.Student;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

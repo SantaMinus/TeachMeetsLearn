@@ -1,4 +1,4 @@
-package com.sava.teachernet.controller.repository;
+package com.sava.teachernet.repository;
 
 import com.sava.teachernet.model.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
