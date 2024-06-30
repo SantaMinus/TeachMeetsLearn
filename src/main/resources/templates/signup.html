@@ -1,15 +1,51 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>LSA Parser</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up</title>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f7f7f7;
+    }
+    .dashboard-container {
+        text-align: center;
+        background-color: white;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+        color: #333;
+    }
+    .dashboard-actions button {
+        padding: 10px 20px;
+        margin: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #5cb85c;
+        color: white;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    .dashboard-actions button:hover {
+        background-color: #4cae4c;
+    }
+  </style>
 </head>
 <body>
 <h1>Register</h1>
 
 <form method="POST" th:action="@{/register}" id="registerForm">
-  <label for="username">Username: </label>
-  <input type="text" name="username"/><br>
+  <label for="login">Login: </label>
+  <input type="text" name="login"/><br>
 
   <label for="password">Password: </label>
   <input type="password" name="password"/><br>
@@ -23,7 +59,7 @@
   <input type="radio" id="teacher" name="role" value="teacher">
   <label for="teacher">Teacher</label><br>
 
-  <input type="submit" value="Register"/>
+  <input type="submit" value="Sign Up"/>
 </form>
 </body>
 </html>
