@@ -3,4 +3,8 @@ spring:
     url: jdbc:postgresql://localhost:5432/learn
     driverClassName: org.postgresql.Driver
     username: postgres
-    password: 12345
+    password: postgres
+security:
+  jwt:
+    token:
+      secret-key: ${JWT_SECRET}
