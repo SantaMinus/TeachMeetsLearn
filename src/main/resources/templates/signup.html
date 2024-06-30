@@ -41,22 +41,19 @@
   </style>
 </head>
 <body>
-<h1>Register</h1>
+<h1>Sign up</h1>
 
-<form method="POST" th:action="@{/register}" id="registerForm">
+<form method="POST" th:action="@{/auth/signup}" id="signUpDto">
   <label for="login">Login: </label>
   <input type="text" name="login"/><br>
 
   <label for="password">Password: </label>
   <input type="password" name="password"/><br>
 
-  <label for="confirm">Confirm password: </label>
-  <input type="password" name="confirm"/><br>
-
   <p>Are you a teacher or a student?</p>
-  <input type="radio" id="student" name="role" value="student">
+  <input type="radio" id="student" name="role" value="STUDENT">
   <label for="student">Student</label><br>
-  <input type="radio" id="teacher" name="role" value="teacher">
+  <input type="radio" id="teacher" name="role" value="TEACHER">
   <label for="teacher">Teacher</label><br>
 
   <input type="submit" value="Sign Up"/>

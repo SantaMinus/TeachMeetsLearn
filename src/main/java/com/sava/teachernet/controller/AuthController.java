@@ -8,7 +8,6 @@ import com.sava.teachernet.model.User;
 import com.sava.teachernet.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,9 +32,9 @@ public class AuthController {
   }
 
   @PostMapping("/signup")
-  public ResponseEntity<Void> signUp(@RequestBody @Valid SignUpDto data) {
-    service.signUp(data);
-    return ResponseEntity.status(HttpStatus.CREATED).build();
+  public String processRegistration(SignUpDto dto) {
+    service.signUp(dto);
+    return "redirect:/signin";
   }
 
   @PostMapping("/signin")
