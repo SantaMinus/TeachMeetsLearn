@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class AbstractUser {
   private String name;
   private String lastName;
   private LocalDate dateJoined;

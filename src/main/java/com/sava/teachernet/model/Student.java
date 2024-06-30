@@ -21,7 +21,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Student extends User {
+public class Student extends AbstractUser {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private int id;

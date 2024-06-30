@@ -18,8 +18,7 @@ public class AuthService implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String username) {
-    var user = repository.findByLogin(username);
-    return user;
+    return repository.findByLogin(username);
   }
 
   public UserDetails signUp(SignUpDto data) throws InvalidJwtException {

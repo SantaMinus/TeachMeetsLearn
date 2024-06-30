@@ -15,7 +15,7 @@ import java.util.List;
 @Entity
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
-public class Teacher extends User {
+public class Teacher extends AbstractUser {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private int id;
