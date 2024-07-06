@@ -1,10 +1,7 @@
 package com.sava.teachernet.controller;
 
-import com.sava.teachernet.config.auth.TokenProvider;
-import com.sava.teachernet.dto.JwtDto;
 import com.sava.teachernet.dto.SignInDto;
 import com.sava.teachernet.dto.SignUpDto;
-import com.sava.teachernet.model.User;
 import com.sava.teachernet.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +19,6 @@ public class AuthController {
 
   private final AuthenticationManager authenticationManager;
   private final AuthService service;
-  private final TokenProvider tokenService;
 
   @GetMapping("/signup")
   public String signUpForm() {
@@ -41,10 +37,9 @@ public class AuthController {
   }
 
   @PostMapping("/login")
-  public ResponseEntity<JwtDto> signIn(SignInDto data) {
+  public ResponseEntity<Void> signIn(SignInDto data) {
     var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
     var authUser = authenticationManager.authenticate(usernamePassword);
-    var accessToken = tokenService.generateAccessToken((User) authUser.getPrincipal());
-    return ResponseEntity.ok(new JwtDto(accessToken));
+    return ResponseEntity.ok().build();
   }
 }
