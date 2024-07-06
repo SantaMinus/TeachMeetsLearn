@@ -5,7 +5,6 @@ import static org.springframework.security.config.Customizer.withDefaults;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,10 +27,9 @@ public class SecurityConfig {
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
         .authorizeHttpRequests(authorize -> authorize
-            .requestMatchers("/auth").permitAll()
             .requestMatchers("/auth/**").permitAll()
-            .requestMatchers(HttpMethod.POST, "/student").hasRole("STUDENT")
-            .requestMatchers(HttpMethod.POST, "/teacher").hasRole("TEACHER")
+            .requestMatchers("/student/**").hasRole("STUDENT")
+            .requestMatchers("/teacher/**").hasRole("TEACHER")
             .anyRequest().authenticated())
         .formLogin(withDefaults())
         .build();

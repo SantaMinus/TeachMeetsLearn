@@ -4,6 +4,9 @@ import com.sava.teachernet.model.Student;
 import com.sava.teachernet.service.StudentService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,9 +26,12 @@ public class StudentController {
 
   @GetMapping("/profile")
   public String showStudentProfile(Model model) {
-    Student student = Student.builder().build();
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-    model.addAttribute(student);
+//    Student student = studentService.findByUsername(userDetails.getUsername());
+
+//    model.addAttribute("student", student);
     return "student/profile";
   }
 

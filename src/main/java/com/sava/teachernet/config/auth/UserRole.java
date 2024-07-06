@@ -1,8 +1,8 @@
 package com.sava.teachernet.config.auth;
 
 public enum UserRole {
-  STUDENT("student"),
-  TEACHER("teacher");
+  STUDENT("ROLE_STUDENT"),
+  TEACHER("ROLE_TEACHER");
 
   private final String role;
 
