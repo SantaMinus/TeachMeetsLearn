@@ -51,8 +51,11 @@
       <button>Schedule</button>
       <button>Teachers</button>
       <button>Learning materials</button>
-      <button>Logout</button>
+      <form th:action="@{/logout}" method="get">
+        <button type="submit">Logout</button>
+      </form>
     </div>
   </div>
+</div>
 </body>
 </html>

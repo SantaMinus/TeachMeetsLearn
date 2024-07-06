@@ -21,12 +21,12 @@ public class AuthService implements UserDetailsService {
     return repository.findByLogin(username);
   }
 
-  public UserDetails signUp(SignUpDto data) throws InvalidAuthException {
+  public void signUp(SignUpDto data) throws InvalidAuthException {
     if (repository.findByLogin(data.login()) != null) {
       throw new InvalidAuthException("Username already exists");
     }
     String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
     User newUser = new User(data.login(), encryptedPassword, data.role());
-    return repository.save(newUser);
+    repository.save(newUser);
   }
 }
