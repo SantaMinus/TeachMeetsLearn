@@ -34,10 +34,15 @@ public class AuthController {
   @PostMapping("/signup")
   public String processRegistration(SignUpDto dto) {
     service.signUp(dto);
-    return "redirect:/signin";
+    return "redirect:/auth/login";
   }
 
-  @PostMapping("/signin")
+  @GetMapping("/login")
+  public String signInForm() {
+    return "login";
+  }
+
+  @PostMapping("/login")
   public ResponseEntity<JwtDto> signIn(@RequestBody @Valid SignInDto data) {
     var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
     var authUser = authenticationManager.authenticate(usernamePassword);
