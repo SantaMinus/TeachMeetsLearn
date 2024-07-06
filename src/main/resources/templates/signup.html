@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,19 +15,39 @@
         height: 100vh;
         background-color: #f7f7f7;
     }
-    .dashboard-container {
+    .signup-container {
         text-align: center;
         background-color: white;
         padding: 20px;
         border-radius: 5px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        width: 300px;
     }
     h1 {
         color: #333;
     }
-    .dashboard-actions button {
+    form {
+        margin-top: 20px;
+    }
+    label {
+        display: block;
+        margin-bottom: 8px;
+        color: #333;
+    }
+    input[type="text"],
+    input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+    input[type="radio"] {
+        margin-right: 10px;
+    }
+    input[type="submit"] {
         padding: 10px 20px;
-        margin: 10px;
         border: none;
         border-radius: 5px;
         background-color: #5cb85c;
@@ -35,28 +55,45 @@
         cursor: pointer;
         font-size: 16px;
     }
-    .dashboard-actions button:hover {
+    input[type="submit"]:hover {
         background-color: #4cae4c;
+    }
+    .error {
+        color: red;
+        margin-bottom: 20px;
+    }
+    .login-link {
+        margin-top: 20px;
+        display: block;
     }
   </style>
 </head>
 <body>
-<h1>Sign up</h1>
+<div class="signup-container">
+  <h1>Sign Up</h1>
+  <div th:if="${error}" class="error">
+    Unable to sign up. Check your details and try again.
+  </div>
 
-<form method="POST" th:action="@{/auth/signup}" id="signUpDto">
-  <label for="login">Login: </label>
-  <input type="text" name="login"/><br>
+  <form method="POST" th:action="@{/auth/signup}" id="signUpDto">
+    <label for="login">Login: </label>
+    <input type="text" name="login" id="login"/>
 
-  <label for="password">Password: </label>
-  <input type="password" name="password"/><br>
+    <label for="password">Password: </label>
+    <input type="password" name="password" id="password"/>
 
-  <p>Are you a teacher or a student?</p>
-  <input type="radio" id="student" name="role" value="STUDENT">
-  <label for="student">Student</label><br>
-  <input type="radio" id="teacher" name="role" value="TEACHER">
-  <label for="teacher">Teacher</label><br>
+    <p>Are you a teacher or a student?</p>
+    <input type="radio" id="student" name="role" value="STUDENT">
+    <label for="student">Student</label><br/>
+    <input type="radio" id="teacher" name="role" value="TEACHER">
+    <label for="teacher">Teacher</label><br/>
 
-  <input type="submit" value="Sign Up"/>
-</form>
+    <input type="submit" value="Sign Up"/>
+  </form>
+
+  <p class="login-link">Already have an account? Click
+    <a th:href="@{/auth/login}">here</a> to login.
+  </p>
+</div>
 </body>
 </html>
