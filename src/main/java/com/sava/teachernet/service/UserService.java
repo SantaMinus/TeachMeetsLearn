@@ -1,9 +1,9 @@
 package com.sava.teachernet.service;
 
-import com.sava.teachernet.model.User;
+import com.sava.teachernet.model.AbstractUser;
 import java.util.List;
 
-public interface UserService<T extends User> {
+public interface UserService<T extends AbstractUser> {
 
   List<T> getAll();
 
