@@ -1,5 +1,7 @@
 package com.sava.teachernet.config;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 import com.sava.teachernet.config.auth.SecurityFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -30,21 +31,20 @@ public class SecurityConfig {
     return httpSecurity
         .csrf(AbstractHttpConfigurer::disable)
         .sessionManagement(
-            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
         .authorizeHttpRequests(authorize -> authorize
             .requestMatchers("/auth").permitAll()
             .requestMatchers("/auth/**").permitAll()
             .requestMatchers(HttpMethod.POST, "/student").hasRole("STUDENT")
             .requestMatchers(HttpMethod.POST, "/teacher").hasRole("TEACHER")
             .anyRequest().authenticated())
-        .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+        .formLogin(withDefaults())
         .build();
   }
 
   @Bean
   AuthenticationManager authenticationManager(
-      AuthenticationConfiguration authenticationConfiguration)
-      throws Exception {
+      AuthenticationConfiguration authenticationConfiguration) throws Exception {
     return authenticationConfiguration.getAuthenticationManager();
   }
 
