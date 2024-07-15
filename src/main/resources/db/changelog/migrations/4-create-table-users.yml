@@ -26,4 +26,4 @@ databaseChangeLog:
                   type: varchar(100)
               - column:
                   name: role
-                  type: varchar(10)
+                  type: varchar(50)
