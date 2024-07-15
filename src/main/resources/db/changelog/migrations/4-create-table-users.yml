@@ -8,12 +8,6 @@ databaseChangeLog:
             - tableExists:
                 tableName: users
       changes:
-        -  sql:
-             dbms:  'postgresql'
-             endDelimiter:  \nGO
-             splitStatements:  true
-             sql:  CREATE TYPE user_role AS ENUM ('admin','user')
-             stripComments:  true
         - createTable:
             tableName: users
             columns:
@@ -32,4 +26,4 @@ databaseChangeLog:
                   type: varchar(100)
               - column:
                   name: role
-                  type: user_role
+                  type: varchar(10)
