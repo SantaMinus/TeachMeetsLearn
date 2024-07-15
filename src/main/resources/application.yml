@@ -4,7 +4,3 @@ spring:
     driverClassName: org.postgresql.Driver
     username: postgres
     password: 12345
-security:
-  jwt:
-    token:
-      secret-key: CHANGE_ME
