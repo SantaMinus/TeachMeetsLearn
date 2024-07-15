@@ -5,7 +5,7 @@ import com.sava.teachernet.exception.InvalidAuthException;
 import com.sava.teachernet.model.User;
 import com.sava.teachernet.repository.UserRepository;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,10 +15,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService implements UserDetailsService {
 
-  @Autowired
-  UserRepository repository;
+  private final UserRepository repository;
 
   @Override
   public UserDetails loadUserByUsername(String login) {
