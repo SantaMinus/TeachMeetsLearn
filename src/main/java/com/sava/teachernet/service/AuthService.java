@@ -34,11 +34,7 @@ public class AuthService implements UserDetailsService {
       throw new InvalidAuthException("Username already exists");
     }
     String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-    String role = switch (data.role()) {
-      case STUDENT -> "ROLE_STUDENT";
-      case TEACHER -> "ROLE_TEACHER";
-    };
-    User newUser = new User(data.login(), encryptedPassword, role);
+    User newUser = new User(data.login(), encryptedPassword, data.role().getValue());
 
     repository.save(newUser);
   }
