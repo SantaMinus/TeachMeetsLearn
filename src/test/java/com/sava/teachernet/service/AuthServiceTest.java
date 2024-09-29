@@ -59,7 +59,7 @@ class AuthServiceTest {
   }
 
   @Test
-  void testSignUpThrowsInvalidAuthException() {
+  void testSignUpExistingUsernameThrowsInvalidAuthException() {
     SignUpDto signUpDto = new SignUpDto(TEST_LOGIN, TEST_PASS, STUDENT, TEST_USER_NAME,
         TEST_USER_LAST_NAME);
     when(userRepository.findByLogin(TEST_LOGIN))
@@ -69,6 +69,15 @@ class AuthServiceTest {
 
     assertThatThrownBy(() -> authService.signUp(signUpDto))
         .isInstanceOf(InvalidAuthException.class).hasMessage("Username already exists");
+  }
+
+  @Test
+  void testSignUpEmptyRoleThrowsInvalidAuthException() {
+    SignUpDto signUpDto = new SignUpDto(TEST_LOGIN, TEST_PASS, null, TEST_USER_NAME,
+        TEST_USER_LAST_NAME);
+
+    assertThatThrownBy(() -> authService.signUp(signUpDto))
+        .isInstanceOf(InvalidAuthException.class).hasMessage("Role is not specified");
   }
 
   @Test

@@ -41,6 +41,9 @@ public class AuthService implements UserDetailsService {
   }
 
   public void signUp(SignUpDto data) throws InvalidAuthException {
+    if (data.role() == null) {
+      throw new InvalidAuthException("Role is not specified");
+    }
     if (userRepository.findByLogin(data.login()).isPresent()) {
       throw new InvalidAuthException("Username already exists");
     }
