@@ -5,13 +5,8 @@ import static com.sava.teachernet.config.auth.UserRole.TEACHER;
 
 import com.sava.teachernet.dto.SignUpDto;
 import com.sava.teachernet.exception.InvalidAuthException;
-import com.sava.teachernet.model.Student;
-import com.sava.teachernet.model.Teacher;
 import com.sava.teachernet.model.User;
-import com.sava.teachernet.repository.StudentRepository;
-import com.sava.teachernet.repository.TeacherRepository;
 import com.sava.teachernet.repository.UserRepository;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +23,8 @@ import org.springframework.stereotype.Service;
 public class AuthService implements UserDetailsService {
 
   private final UserRepository userRepository;
-  private final StudentRepository studentRepository;
-  private final TeacherRepository teacherRepository;
+  private final StudentService studentService;
+  private final TeacherService teacherService;
 
   @Override
   public UserDetails loadUserByUsername(String login) {
@@ -52,21 +47,9 @@ public class AuthService implements UserDetailsService {
     userRepository.save(newUser);
 
     if (Objects.equals(data.role(), STUDENT)) {
-      Student student = Student.builder()
-          .name(data.name())
-          .lastName(data.lastName())
-          .user(newUser)
-          .dateJoined(LocalDate.now())
-          .build();
-      studentRepository.save(student);
+      studentService.create(data.name(), data.lastName(), newUser);
     } else if (Objects.equals(data.role(), TEACHER)) {
-      Teacher teacher = Teacher.builder()
-          .name(data.name())
-          .lastName(data.lastName())
-          .user(newUser)
-          .dateJoined(LocalDate.now())
-          .build();
-      teacherRepository.save(teacher);
+      teacherService.create(data.name(), data.lastName(), newUser);
     }
   }
 }

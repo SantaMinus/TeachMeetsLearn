@@ -1,6 +1,7 @@
 package com.sava.teachernet.service;
 
 import com.sava.teachernet.model.AbstractUser;
+import com.sava.teachernet.model.User;
 import java.util.List;
 
 public interface UserService<T extends AbstractUser> {
@@ -9,7 +10,7 @@ public interface UserService<T extends AbstractUser> {
 
   T getProfile(String username);
 
-  T create(T student);
+  T create(String name, String lastName, User user);
 
   T update(T student);
 

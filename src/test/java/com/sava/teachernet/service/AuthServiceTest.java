@@ -34,8 +34,10 @@ class AuthServiceTest {
   private final UserRepository userRepository = mock(UserRepository.class);
   private final StudentRepository studentRepository = mock(StudentRepository.class);
   private final TeacherRepository teacherRepository = mock(TeacherRepository.class);
-  private final AuthService authService = new AuthService(userRepository, studentRepository,
-      teacherRepository);
+  private final StudentService studentService = new StudentService(studentRepository);
+  private final TeacherService teacherService = new TeacherService(teacherRepository);
+  private final AuthService authService = new AuthService(userRepository, studentService,
+      teacherService);
 
   @Test
   void loadUserByUsername() {
