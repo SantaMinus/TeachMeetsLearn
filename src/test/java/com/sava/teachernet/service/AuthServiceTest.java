@@ -1,6 +1,7 @@
 package com.sava.teachernet.service;
 
 import static com.sava.teachernet.config.auth.UserRole.STUDENT;
+import static com.sava.teachernet.config.auth.UserRole.TEACHER;
 import static com.sava.teachernet.util.Constants.TEST_LOGIN;
 import static com.sava.teachernet.util.Constants.TEST_PASS;
 import static com.sava.teachernet.util.Constants.TEST_USER_LAST_NAME;
@@ -15,6 +16,7 @@ import static org.mockito.Mockito.when;
 import com.sava.teachernet.dto.SignUpDto;
 import com.sava.teachernet.exception.InvalidAuthException;
 import com.sava.teachernet.model.Student;
+import com.sava.teachernet.model.Teacher;
 import com.sava.teachernet.model.User;
 import com.sava.teachernet.repository.StudentRepository;
 import com.sava.teachernet.repository.TeacherRepository;
@@ -85,5 +87,23 @@ class AuthServiceTest {
     verify(studentRepository).save(studentArg.capture());
     assertEquals(TEST_USER_NAME, studentArg.getValue().getName());
     assertEquals(TEST_USER_LAST_NAME, studentArg.getValue().getLastName());
+  }
+
+  @Test
+  void testSignUpTeacher() {
+    SignUpDto signUpDto = new SignUpDto(TEST_LOGIN, TEST_PASS, TEACHER, TEST_USER_NAME,
+        TEST_USER_LAST_NAME);
+
+    authService.signUp(signUpDto);
+
+    ArgumentCaptor<User> userArg = ArgumentCaptor.forClass(User.class);
+    verify(userRepository).save(userArg.capture());
+    assertEquals(TEST_LOGIN, userArg.getValue().getLogin());
+    assertEquals(TEACHER.getValue(), userArg.getValue().getRole());
+
+    ArgumentCaptor<Teacher> teacherArg = ArgumentCaptor.forClass(Teacher.class);
+    verify(teacherRepository).save(teacherArg.capture());
+    assertEquals(TEST_USER_NAME, teacherArg.getValue().getName());
+    assertEquals(TEST_USER_LAST_NAME, teacherArg.getValue().getLastName());
   }
 }
