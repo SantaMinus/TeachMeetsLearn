@@ -9,14 +9,18 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import java.time.LocalDate;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 @Data
 @Entity
 @SuperBuilder
 @EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 public class Teacher implements AbstractUser {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
