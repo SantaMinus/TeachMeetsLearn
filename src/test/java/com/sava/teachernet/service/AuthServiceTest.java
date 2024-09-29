@@ -12,17 +12,15 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.sava.teachernet.config.auth.UserRole;
 import com.sava.teachernet.dto.SignUpDto;
 import com.sava.teachernet.exception.InvalidAuthException;
+import com.sava.teachernet.model.Student;
 import com.sava.teachernet.model.User;
 import com.sava.teachernet.repository.StudentRepository;
 import com.sava.teachernet.repository.TeacherRepository;
 import com.sava.teachernet.repository.UserRepository;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.ArgumentCaptor;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -71,17 +69,21 @@ class AuthServiceTest {
         .isInstanceOf(InvalidAuthException.class).hasMessage("Username already exists");
   }
 
-  @ParameterizedTest
-  @EnumSource(UserRole.class)
-  void testSignUp(UserRole role) {
-    SignUpDto signUpDto = new SignUpDto(TEST_LOGIN, TEST_PASS, role, TEST_USER_NAME,
+  @Test
+  void testSignUpStudent() {
+    SignUpDto signUpDto = new SignUpDto(TEST_LOGIN, TEST_PASS, STUDENT, TEST_USER_NAME,
         TEST_USER_LAST_NAME);
 
     authService.signUp(signUpDto);
 
-    ArgumentCaptor<User> argument = ArgumentCaptor.forClass(User.class);
-    verify(userRepository).save(argument.capture());
-    assertEquals(TEST_LOGIN, argument.getValue().getLogin());
-    assertEquals(role.getValue(), argument.getValue().getRole());
+    ArgumentCaptor<User> userArg = ArgumentCaptor.forClass(User.class);
+    verify(userRepository).save(userArg.capture());
+    assertEquals(TEST_LOGIN, userArg.getValue().getLogin());
+    assertEquals(STUDENT.getValue(), userArg.getValue().getRole());
+
+    ArgumentCaptor<Student> studentArg = ArgumentCaptor.forClass(Student.class);
+    verify(studentRepository).save(studentArg.capture());
+    assertEquals(TEST_USER_NAME, studentArg.getValue().getName());
+    assertEquals(TEST_USER_LAST_NAME, studentArg.getValue().getLastName());
   }
 }
