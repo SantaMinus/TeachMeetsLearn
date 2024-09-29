@@ -20,10 +20,10 @@ import lombok.experimental.SuperBuilder;
 @Data
 @Entity
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class Student extends AbstractUser {
+public class Student implements AbstractUser {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
