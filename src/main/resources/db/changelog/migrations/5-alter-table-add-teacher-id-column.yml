@@ -1,12 +1,12 @@
 databaseChangeLog:
   - changeSet:
-      id: alter-table-student-add-user-id-column
+      id: alter-table-teacher-add-user-id-column
       author: santaminus
       preConditions:
         - onFail: MARK_RAN
       changes:
         - addColumn:
-            tableName: student
+            tableName: teacher
             columns:
               - column:
                   name: user_id
