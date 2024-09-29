@@ -4,7 +4,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,15 +16,19 @@ import lombok.experimental.SuperBuilder;
 @Data
 @Entity
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true)
-public class Teacher extends AbstractUser {
+@EqualsAndHashCode
+public class Teacher implements AbstractUser {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
 
-//  @OneToOne
-//  @JoinColumn(name = "user_id", referencedColumnName = "id")
-//  private User user;
+  private String name;
+  private String lastName;
+  private LocalDate dateJoined;
+
+  @OneToOne
+  @JoinColumn(name = "user_id", referencedColumnName = "id")
+  private User user;
 
   @ManyToMany(mappedBy = "teachers")
   List<Student> students;

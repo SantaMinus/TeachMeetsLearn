@@ -63,7 +63,7 @@ public class AuthService implements UserDetailsService {
       Teacher teacher = Teacher.builder()
           .name(data.name())
           .lastName(data.lastName())
-//          .user(newUser)
+          .user(newUser)
           .dateJoined(LocalDate.now())
           .build();
       teacherRepository.save(teacher);
