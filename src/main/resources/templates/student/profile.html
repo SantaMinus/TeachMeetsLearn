@@ -22,6 +22,19 @@
         border-radius: 5px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
+    .profile-actions button {
+        padding: 10px 20px;
+        margin: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #5cb85c;
+        color: white;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    .profile-actions button:hover {
+        background-color: #4cae4c;
+    }
     h1 {
         color: #333;
     }
@@ -52,44 +65,12 @@
 
     <label>Teachers:</label>
     <p th:text="${student.teachers}"></p>
-    <button class="edit-button" onclick="toggleForm()">Edit</button>
-
-    <div class="form-container" id="editForm">
-      <form>
-        <label for="editName">Name:</label>
-        <input type="text" id="editName" name="editName" value="" />
-
-        <label for="editLastname">Lastname:</label>
-        <input type="text" id="editLastname" name="editLastname" value="" />
-
-        <!-- Add other input fields as needed -->
-
-        <button type="button" onclick="saveChanges()">Save Changes</button>
-        <button type="button" onclick="cancelEdit()">Cancel</button>
-      </form>
-    </div>
+  </div>
+  <div class="profile-actions">
+    <form th:action="@{/student/dashboard}" method="get">
+      <button type="submit">Back</button>
+    </form>
   </div>
 </div>
-<script th:inline="javascript">
-  function toggleForm() {
-      var formContainer = document.getElementById("editForm");
-      formContainer.style.display = formContainer.style.display === "none" ? "block" : "none";
-
-      var profileInfo = document.querySelector(".profile-info");
-      profileInfo.style.display = profileInfo.style.display === "none" ? "block" : "none";
-  }
-
-  function saveChanges() {
-      // Add logic to save changes (e.g., send an AJAX request to update the server)
-      alert("Changes saved!");
-      toggleForm(); // Hide the form after saving changes
-  }
-
-  function cancelEdit() {
-      // Add logic to cancel the edit (e.g., reset form values)
-      alert("Edit canceled!");
-      toggleForm(); // Hide the form after canceling
-  }
-</script>
 </body>
 </html>
