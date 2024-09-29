@@ -3,6 +3,8 @@ package com.sava.teachernet.service;
 import static com.sava.teachernet.config.auth.UserRole.STUDENT;
 import static com.sava.teachernet.util.Constants.TEST_LOGIN;
 import static com.sava.teachernet.util.Constants.TEST_PASS;
+import static com.sava.teachernet.util.Constants.TEST_USER_LAST_NAME;
+import static com.sava.teachernet.util.Constants.TEST_USER_NAME;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -14,6 +16,8 @@ import com.sava.teachernet.config.auth.UserRole;
 import com.sava.teachernet.dto.SignUpDto;
 import com.sava.teachernet.exception.InvalidAuthException;
 import com.sava.teachernet.model.User;
+import com.sava.teachernet.repository.StudentRepository;
+import com.sava.teachernet.repository.TeacherRepository;
 import com.sava.teachernet.repository.UserRepository;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -27,15 +31,18 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 @SpringBootTest
 class AuthServiceTest {
 
-  private final UserRepository repository = mock(UserRepository.class);
-  private final AuthService authService = new AuthService(repository);
+  private final UserRepository userRepository = mock(UserRepository.class);
+  private final StudentRepository studentRepository = mock(StudentRepository.class);
+  private final TeacherRepository teacherRepository = mock(TeacherRepository.class);
+  private final AuthService authService = new AuthService(userRepository, studentRepository,
+      teacherRepository);
 
   @Test
   void loadUserByUsername() {
-    when(repository.findByLogin(TEST_LOGIN))
+    when(userRepository.findByLogin(TEST_LOGIN))
         .thenReturn(Optional.of(
             User.builder()
-                .id(1L).login(TEST_LOGIN).password(TEST_PASS).role(STUDENT.name()).build()));
+                .id(1).login(TEST_LOGIN).password(TEST_PASS).role(STUDENT.name()).build()));
 
     UserDetails result = authService.loadUserByUsername(TEST_LOGIN);
 
@@ -53,11 +60,12 @@ class AuthServiceTest {
 
   @Test
   void testSignUpThrowsInvalidAuthException() {
-    SignUpDto signUpDto = new SignUpDto(TEST_LOGIN, TEST_PASS, STUDENT);
-    when(repository.findByLogin(TEST_LOGIN))
+    SignUpDto signUpDto = new SignUpDto(TEST_LOGIN, TEST_PASS, STUDENT, TEST_USER_NAME,
+        TEST_USER_LAST_NAME);
+    when(userRepository.findByLogin(TEST_LOGIN))
         .thenReturn(Optional.of(
             User.builder()
-                .id(1L).login(TEST_LOGIN).password(TEST_PASS).role(STUDENT.name()).build()));
+                .id(1).login(TEST_LOGIN).password(TEST_PASS).role(STUDENT.name()).build()));
 
     assertThatThrownBy(() -> authService.signUp(signUpDto))
         .isInstanceOf(InvalidAuthException.class).hasMessage("Username already exists");
@@ -66,12 +74,13 @@ class AuthServiceTest {
   @ParameterizedTest
   @EnumSource(UserRole.class)
   void testSignUp(UserRole role) {
-    SignUpDto signUpDto = new SignUpDto(TEST_LOGIN, TEST_PASS, role);
+    SignUpDto signUpDto = new SignUpDto(TEST_LOGIN, TEST_PASS, role, TEST_USER_NAME,
+        TEST_USER_LAST_NAME);
 
     authService.signUp(signUpDto);
 
     ArgumentCaptor<User> argument = ArgumentCaptor.forClass(User.class);
-    verify(repository).save(argument.capture());
+    verify(userRepository).save(argument.capture());
     assertEquals(TEST_LOGIN, argument.getValue().getLogin());
     assertEquals(role.getValue(), argument.getValue().getRole());
   }
