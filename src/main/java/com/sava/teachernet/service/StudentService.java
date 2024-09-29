@@ -1,7 +1,9 @@
 package com.sava.teachernet.service;
 
+import com.sava.teachernet.model.User;
 import com.sava.teachernet.repository.StudentRepository;
 import com.sava.teachernet.model.Student;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,8 +24,14 @@ public class StudentService implements UserService<Student> {
   }
 
   @Override
-  public Student create(Student student) {
-    return null;
+  public Student create(String name, String lastName, User user) {
+    Student student = Student.builder()
+        .name(name)
+        .lastName(lastName)
+        .user(user)
+        .dateJoined(LocalDate.now())
+        .build();
+    return studentRepository.save(student);
   }
 
   @Override
