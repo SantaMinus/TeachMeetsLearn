@@ -7,7 +7,7 @@ public interface UserService<T extends AbstractUser> {
 
   List<T> getAll();
 
-  T getProfile(int id);
+  T getProfile(String username);
 
   T create(T student);
 

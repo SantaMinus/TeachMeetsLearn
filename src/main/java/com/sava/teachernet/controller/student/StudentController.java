@@ -29,9 +29,9 @@ public class StudentController {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-//    Student student = studentService.findByUsername(userDetails.getUsername());
+    Student student = studentService.getProfile(userDetails.getUsername());
 
-//    model.addAttribute("student", student);
+    model.addAttribute("student", student);
     return "student/profile";
   }
 
