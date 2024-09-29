@@ -22,8 +22,8 @@ databaseChangeLog:
                   name: name
                   type: varchar(100)
               - column:
-                  name: lastName
+                  name: last_name
                   type: varchar(100)
               - column:
-                  name: dateJoined
+                  name: date_joined
                   type: Date

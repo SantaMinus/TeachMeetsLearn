@@ -5,5 +5,7 @@ import com.sava.teachernet.config.auth.UserRole;
 public record SignUpDto(
     String login,
     String password,
-    UserRole role) {
+    UserRole role,
+    String name,
+    String lastName) {
 }

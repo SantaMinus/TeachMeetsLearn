@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -44,17 +44,15 @@
 <div class="dashboard-container">
   <h1>Student Dashboard</h1>
   <div class="dashboard-actions">
-    <div class="dashboard-actions">
-      <form th:action="@{/student/profile}" method="get">
-        <button type="submit">My profile</button>
-      </form>
-      <button>Schedule</button>
-      <button>Teachers</button>
-      <button>Learning materials</button>
-      <form th:action="@{/logout}" method="get">
-        <button type="submit">Logout</button>
-      </form>
-    </div>
+    <form th:action="@{/student/profile}" method="get">
+      <button type="submit">My profile</button>
+    </form>
+    <button>Schedule</button>
+    <button>Teachers</button>
+    <button>Learning materials</button>
+    <form th:action="@{/logout}" method="post">
+      <button type="submit">Logout</button>
+    </form>
   </div>
 </div>
 </body>

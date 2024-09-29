@@ -17,8 +17,8 @@ public class StudentService implements UserService<Student> {
   }
 
   @Override
-  public Student getProfile(int id) {
-    return null;
+  public Student getProfile(String username) {
+    return studentRepository.findByUserLogin(username).orElse(null);
   }
 
   @Override
