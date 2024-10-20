@@ -48,7 +48,9 @@
       <button type="submit">My profile</button>
     </form>
     <button>Schedule</button>
-    <button>Teachers</button>
+    <form th:action="@{/student/teachers}" method="get">
+      <button type="submit">Teachers</button>
+    </form>
     <button>Learning materials</button>
     <form th:action="@{/logout}" method="post">
       <button type="submit">Logout</button>
