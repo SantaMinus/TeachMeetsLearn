@@ -44,11 +44,11 @@
 <div class="dashboard-container">
   <h1>Student Dashboard</h1>
   <div class="dashboard-actions">
-    <form th:action="@{/student/profile}" method="get">
+    <form th:action="@{/students/me/profile}" method="get">
       <button type="submit">My profile</button>
     </form>
     <button>Schedule</button>
-    <form th:action="@{/student/teachers}" method="get">
+    <form th:action="@{/students/me/teachers}" method="get">
       <button type="submit">Teachers</button>
     </form>
     <button>Learning materials</button>
