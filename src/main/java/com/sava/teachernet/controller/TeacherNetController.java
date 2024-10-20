@@ -19,9 +19,9 @@ public class TeacherNetController {
     ModelAndView modelAndView = new ModelAndView();
 
     if ("student".equals(role)) {
-      modelAndView.setViewName("redirect:/student/dashboard");
+      modelAndView.setViewName("redirect:/students/me/dashboard");
     } else if ("teacher".equals(role)) {
-      modelAndView.setViewName("redirect:/teacher/dashboard");
+      modelAndView.setViewName("redirect:/teachers/me/dashboard");
     } else {
       modelAndView.setViewName("redirect:/error");
     }
