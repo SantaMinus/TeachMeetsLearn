@@ -1,6 +1,7 @@
 package com.sava.teachernet.controller.student;
 
 import com.sava.teachernet.model.Student;
+import com.sava.teachernet.model.Teacher;
 import com.sava.teachernet.service.StudentService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,18 @@ public class StudentController {
 
     model.addAttribute("student", student);
     return "student/profile";
+  }
+
+  @GetMapping("/teachers")
+  public String getStudentTeachers(Model model) {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+    Student student = studentService.getProfile(userDetails.getUsername());
+    List<Teacher> studentTeachers = student.getTeachers();
+
+    model.addAttribute("teacherList", studentTeachers);
+    return "teachers";
   }
 
   @GetMapping
