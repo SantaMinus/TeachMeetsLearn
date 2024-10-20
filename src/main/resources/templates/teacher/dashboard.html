@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -48,7 +48,9 @@
       <button type="submit">My profile</button>
     </form>
     <button>Schedule</button>
-    <button>Students</button>
+    <form th:action="@{/teacher/students}" method="get">
+      <button type="submit">Students</button>
+    </form>
     <form th:action="@{/logout}" method="get">
       <button type="submit">Logout</button>
     </form>

@@ -1,7 +1,9 @@
 package com.sava.teachernet.controller.teacher;
 
+import com.sava.teachernet.model.Student;
 import com.sava.teachernet.model.Teacher;
 import com.sava.teachernet.service.TeacherService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 @RequestMapping("/teacher")
 public class TeacherController {
+
   private final TeacherService teacherService;
 
   @GetMapping("/dashboard")
@@ -31,5 +34,17 @@ public class TeacherController {
 
     model.addAttribute("teacher", teacher);
     return "teacher/profile";
+  }
+
+  @GetMapping("/students")
+  public String getTeacherStudents(Model model) {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+    Teacher teacher = teacherService.getProfile(userDetails.getUsername());
+    List<Student> teacherStudents = teacher.getStudents();
+
+    model.addAttribute("studentList", teacherStudents);
+    return "students";
   }
 }
