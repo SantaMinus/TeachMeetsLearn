@@ -29,12 +29,12 @@ public class TeacherController {
   }
 
   @GetMapping("/me/dashboard")
-  public String showTeacherDashboard() {
+  public String showCurrentTeacherDashboard() {
     return "teacher/dashboard";
   }
 
   @GetMapping("/me/profile")
-  public String showStudentProfile(Model model) {
+  public String showCurrentTeacherProfile(Model model) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
@@ -45,7 +45,7 @@ public class TeacherController {
   }
 
   @GetMapping("/me/students")
-  public String getTeacherStudents(Model model) {
+  public String getCurrentTeacherStudents(Model model) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
