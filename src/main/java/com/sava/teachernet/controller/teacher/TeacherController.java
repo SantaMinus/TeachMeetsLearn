@@ -53,6 +53,6 @@ public class TeacherController {
     List<Student> teacherStudents = teacher.getStudents();
 
     model.addAttribute("studentList", teacherStudents);
-    return "students";
+    return "teacher/students";
   }
 }
