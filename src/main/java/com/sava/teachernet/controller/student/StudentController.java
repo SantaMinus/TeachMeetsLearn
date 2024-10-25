@@ -14,19 +14,27 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/student")
+@RequestMapping("/students")
 @RequiredArgsConstructor
 public class StudentController {
 
   private final StudentService studentService;
 
-  @GetMapping("/dashboard")
-  public String showStudentDashboard() {
+  @GetMapping
+  public String getStudents(Model model) {
+    List<Student> studentList = studentService.getAll();
+    model.addAttribute("studentList", studentList);
+
+    return "/students";
+  }
+
+  @GetMapping("/me/dashboard")
+  public String showCurrentStudentDashboard() {
     return "student/dashboard";
   }
 
-  @GetMapping("/profile")
-  public String showStudentProfile(Model model) {
+  @GetMapping("/me/profile")
+  public String showCurrentStudentProfile(Model model) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
@@ -36,8 +44,8 @@ public class StudentController {
     return "student/profile";
   }
 
-  @GetMapping("/teachers")
-  public String getStudentTeachers(Model model) {
+  @GetMapping("/me/teachers")
+  public String getCurrentStudentTeachers(Model model) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
@@ -45,15 +53,7 @@ public class StudentController {
     List<Teacher> studentTeachers = student.getTeachers();
 
     model.addAttribute("teacherList", studentTeachers);
-    return "teachers";
-  }
-
-  @GetMapping
-  public String getStudents(Model model) {
-    List<Student> studentList = studentService.getAll();
-    model.addAttribute("studentList", studentList);
-
-    return "/students";
+    return "student/teachers";
   }
 }
 

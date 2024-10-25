@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Profile</title>
+  <title>Teacher List</title>
   <style>
     body {
         font-family: Arial, sans-serif;
@@ -15,14 +15,14 @@
         height: 100vh;
         background-color: #f7f7f7;
     }
-    .profile-container {
+    .teacher-list-container {
         text-align: center;
         background-color: white;
         padding: 20px;
         border-radius: 5px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
-    .profile-actions button {
+    .teacher-list-actions button {
         padding: 10px 20px;
         margin: 10px;
         border: none;
@@ -32,41 +32,47 @@
         cursor: pointer;
         font-size: 16px;
     }
-    .profile-actions button:hover {
+    .teacher-list-actions button:hover {
         background-color: #4cae4c;
     }
     h1 {
         color: #333;
     }
-    .profile-info {
-        text-align: left;
+    table {
+        width: 100%;
+        border-collapse: collapse;
         margin-top: 20px;
     }
-    .profile-info label {
-        font-weight: bold;
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
     }
-    .profile-info p {
-        margin: 5px 0;
+    th {
+        background-color: #f2f2f2;
     }
   </style>
 </head>
 <body>
-<div class="profile-container">
-  <h1>Student Profile</h1>
-  <div class="profile-info">
-    <label>Name:</label>
-    <p th:text="${student.name}"></p>
-
-    <label>Lastname:</label>
-    <p th:text="${student.lastName}"></p>
-
-    <label>Date Joined:</label>
-    <p th:text="${student.dateJoined}"></p>
-
-    <label>Teachers:</label>
-    <p th:text="${student.teachers}"></p>
-  </div>
-  <div class="profile-actions">
+<div class="teacher-list-container">
+  <h1>Teacher List</h1>
+  <table>
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Lastname</th>
+      <th>Date Joined</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="teacher : ${teacherList}">
+      <td th:text="${teacher.name}"></td>
+      <td th:text="${teacher.lastName}"></td>
+      <td th:text="${teacher.dateJoined}"></td>
+    </tr>
+    </tbody>
+  </table>
+  <div class="teacher-list-actions">
     <form th:action="@{/students/me/dashboard}" method="get">
       <button type="submit">Back</button>
     </form>

@@ -15,18 +15,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/teacher")
+@RequestMapping("/teachers")
 public class TeacherController {
 
   private final TeacherService teacherService;
 
-  @GetMapping("/dashboard")
-  public String showTeacherDashboard() {
+  @GetMapping
+  public String getTeachers(Model model) {
+    List<Teacher> teacherList = teacherService.getAll();
+    model.addAttribute("teacherList", teacherList);
+
+    return "/teachers";
+  }
+
+  @GetMapping("/me/dashboard")
+  public String showCurrentTeacherDashboard() {
     return "teacher/dashboard";
   }
 
-  @GetMapping("/profile")
-  public String showStudentProfile(Model model) {
+  @GetMapping("/me/profile")
+  public String showCurrentTeacherProfile(Model model) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
@@ -36,8 +44,8 @@ public class TeacherController {
     return "teacher/profile";
   }
 
-  @GetMapping("/students")
-  public String getTeacherStudents(Model model) {
+  @GetMapping("/me/students")
+  public String getCurrentTeacherStudents(Model model) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
@@ -45,6 +53,6 @@ public class TeacherController {
     List<Student> teacherStudents = teacher.getStudents();
 
     model.addAttribute("studentList", teacherStudents);
-    return "students";
+    return "teacher/students";
   }
 }
