@@ -25,7 +25,7 @@ public class TeacherController {
     List<Teacher> teacherList = teacherService.getAll();
     model.addAttribute("teacherList", teacherList);
 
-    return "/teachers";
+    return "teachers";
   }
 
   @GetMapping("/me/dashboard")
