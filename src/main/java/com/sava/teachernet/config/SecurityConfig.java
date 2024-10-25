@@ -28,8 +28,8 @@ public class SecurityConfig {
             session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
         .authorizeHttpRequests(authorize -> authorize
             .requestMatchers("/auth/**").permitAll()
-            .requestMatchers("/students/all").permitAll()
-            .requestMatchers("/teachers/all").permitAll()
+            .requestMatchers("/students").permitAll()
+            .requestMatchers("/teachers").permitAll()
             .requestMatchers("/students/**").hasRole("STUDENT")
             .requestMatchers("/teachers/**").hasRole("TEACHER")
             .anyRequest().authenticated())
