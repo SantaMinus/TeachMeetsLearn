@@ -25,7 +25,7 @@ public class StudentController {
     List<Student> studentList = studentService.getAll();
     model.addAttribute("studentList", studentList);
 
-    return "/students";
+    return "students";
   }
 
   @GetMapping("/me/dashboard")
