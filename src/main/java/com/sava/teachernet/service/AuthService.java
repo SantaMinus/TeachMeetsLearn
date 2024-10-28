@@ -1,7 +1,6 @@
 package com.sava.teachernet.service;
 
 import static com.sava.teachernet.config.auth.UserRole.STUDENT;
-import static com.sava.teachernet.config.auth.UserRole.TEACHER;
 
 import com.sava.teachernet.dto.SignUpDto;
 import com.sava.teachernet.exception.InvalidAuthException;
@@ -48,7 +47,7 @@ public class AuthService implements UserDetailsService {
 
     if (Objects.equals(data.role(), STUDENT)) {
       studentService.create(data.name(), data.lastName(), newUser);
-    } else if (Objects.equals(data.role(), TEACHER)) {
+    } else {
       teacherService.create(data.name(), data.lastName(), newUser);
     }
   }
