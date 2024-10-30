@@ -4,11 +4,10 @@ on:
   workflow_dispatch:
 
 env:
-  APP_NAME: teachmeetslearn
-  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}
+  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/teachmeetslearn
 
 jobs:
-  build-image:
+  push-image:
     runs-on: ubuntu-latest
     permissions:
       packages: write
