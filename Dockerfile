@@ -1,11 +1,11 @@
 # Step 1: Build the application
-FROM gradle:8.4 as build
+FROM gradle:8.4 AS build
 WORKDIR /app
 COPY --chown=gradle:gradle . /app
 RUN gradle clean bootJar --no-daemon
 
 # Step 2: Extract layers from the JAR
-FROM openjdk:17.0.2-slim as builder
+FROM openjdk:17.0.2-slim AS builder
 WORKDIR /app
 COPY --from=build /app/build/libs/teacher-net-0.0.1-SNAPSHOT.jar /app/teacher-net.jar
 RUN java -Djarmode=layertools -jar teacher-net.jar extract
