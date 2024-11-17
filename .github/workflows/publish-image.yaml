@@ -29,21 +29,23 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Docker meta
-        uses: docker/metadata-action@v5
-        with:
-          images: |
-            ${{ env.IMAGE_NAME }}
-          tags: |
-            type=sha,format=long
-        id: meta
+      # - name: Docker meta
+      #   uses: docker/metadata-action@v5
+      #   with:
+      #     images: |
+      #       ${{ env.IMAGE_NAME }}
+      #     tags: |
+      #       type=sha,format=long
+      #   id: meta
 
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          tags: ${{ github.sha }} # ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
         id: push
 
@@ -63,3 +65,6 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
+        env:
+          TRIVY_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          TRIVY_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
