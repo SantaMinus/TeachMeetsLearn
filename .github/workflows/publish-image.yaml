@@ -45,7 +45,7 @@ jobs:
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          tags: ${{ github.sha }} # ${{ steps.meta.outputs.tags }}
+          tags: docker.io/${{ env.IMAGE_NAME }}:${{ github.sha }} # ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
         id: push
 
