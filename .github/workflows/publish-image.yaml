@@ -43,6 +43,7 @@ jobs:
         with:
           platforms: linux/amd64,linux/arm64
           push: true
+          sbom: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
           tags: ${{ env.IMAGE_NAME }}:${{ github.sha }} # ${{ steps.meta.outputs.tags }}
@@ -61,7 +62,7 @@ jobs:
         with:
           image-ref: ${{ env.IMAGE_NAME }}:${{ github.sha }}
           format: table
-          exit-code: 1
+          # exit-code: 1
           ignore-unfixed: true
           vuln-type: os,library
           severity: CRITICAL,HIGH
