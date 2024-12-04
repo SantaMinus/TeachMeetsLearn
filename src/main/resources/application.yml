@@ -1,6 +1,27 @@
 spring:
+  application:
+    name: teach-meets-learn
   datasource:
     url: ${DATABASE_URL}
     driverClassName: org.postgresql.Driver
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: true
+
+logging:
+  pattern:
+    level: %5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]

@@ -27,8 +27,16 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
   implementation 'org.springframework.boot:spring-boot-starter-validation'
   implementation 'org.springframework.boot:spring-boot-starter-web'
+  implementation 'org.springframework.boot:spring-boot-starter-actuator'
+  implementation 'org.springframework.boot:spring-boot-starter-aop'
+  implementation 'org.springframework.cloud:spring-cloud-sleuth-brave'
+  implementation 'org.springframework.boot:spring-boot-autoconfigure'
   implementation 'org.liquibase:liquibase-core'
   implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+  implementation 'io.micrometer:micrometer-registry-prometheus'
+  implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+  implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
+  implementation 'com.github.loki4j:loki-logback-appender:1.5.2'
 
   runtimeOnly 'org.postgresql:postgresql'
 
