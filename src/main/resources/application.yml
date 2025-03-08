@@ -21,7 +21,18 @@ management:
         http:
           server:
             requests: true
+    export:
+      defaults:
+        enabled: true
+      prometheus:
+        enabled: true
+  endpoint:
+    metrics:
+      enabled: true
 
 logging:
-  pattern:
-    level: %5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]
+  level:
+    root: TRACE
+#logging:
+#  pattern:
+#    level: %5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]

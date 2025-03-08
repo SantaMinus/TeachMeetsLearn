@@ -3,6 +3,7 @@ package com.sava.teachernet.controller;
 import com.sava.teachernet.dto.SignInDto;
 import com.sava.teachernet.dto.SignUpDto;
 import com.sava.teachernet.service.AuthService;
+import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,7 @@ public class AuthController {
   }
 
   @PostMapping("/signup")
+  @Timed(description = "Time spent registering")
   public String processRegistration(SignUpDto dto) {
     log.info("Got a signup request");
     service.signUp(dto);
