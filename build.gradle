@@ -29,6 +29,7 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.liquibase:liquibase-core'
   implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+  implementation 'com.github.loki4j:loki-logback-appender:1.6.0'
 
   runtimeOnly 'org.postgresql:postgresql'
 
