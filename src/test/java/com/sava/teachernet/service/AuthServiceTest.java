@@ -6,6 +6,7 @@ import static com.sava.teachernet.util.Constants.TEST_LOGIN;
 import static com.sava.teachernet.util.Constants.TEST_PASS;
 import static com.sava.teachernet.util.Constants.TEST_USER_LAST_NAME;
 import static com.sava.teachernet.util.Constants.TEST_USER_NAME;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -13,6 +14,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sava.teachernet.dto.SignUpDto;
 import com.sava.teachernet.exception.InvalidAuthException;
 import com.sava.teachernet.model.Student;
@@ -21,12 +25,26 @@ import com.sava.teachernet.model.User;
 import com.sava.teachernet.repository.StudentRepository;
 import com.sava.teachernet.repository.TeacherRepository;
 import com.sava.teachernet.repository.UserRepository;
+import java.net.URI;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @SpringBootTest
 class AuthServiceTest {
@@ -116,5 +134,54 @@ class AuthServiceTest {
     verify(teacherRepository).save(teacherArg.capture());
     assertEquals(TEST_USER_NAME, teacherArg.getValue().getName());
     assertEquals(TEST_USER_LAST_NAME, teacherArg.getValue().getLastName());
+  }
+
+  @Test
+  public void testLog() throws JsonProcessingException {
+    authService.log();
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+
+    String query = "{level=\"INFO\"} |= `log() invoked`";
+
+    // Get time in UTC
+    LocalDateTime currentDateTime = LocalDateTime.now(ZoneOffset.UTC);
+    String current_time_utc = currentDateTime.format(
+        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"));
+
+    LocalDateTime tenMinsAgo = currentDateTime.minusMinutes(10);
+    String start_time_utc = tenMinsAgo.format(
+        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"));
+
+    String baseUrl = "http://loki:3100";
+    URI uri = UriComponentsBuilder.fromUriString(baseUrl)
+        .queryParam("query", query)
+        .queryParam("start", start_time_utc)
+        .queryParam("end", current_time_utc)
+        .build()
+        .toUri();
+
+    RestTemplate restTemplate = new RestTemplate();
+    ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET,
+        new HttpEntity<>(headers), String.class);
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    List<String> messages = new ArrayList<>();
+    String responseBody = response.getBody();
+    JsonNode jsonNode = objectMapper.readTree(responseBody);
+    JsonNode result = jsonNode.get("data")
+        .get("result")
+        .get(0)
+        .get("values");
+
+    result.iterator()
+        .forEachRemaining(e -> {
+          Iterator<JsonNode> elements = e.elements();
+          elements.forEachRemaining(f -> messages.add(f.toString()));
+        });
+
+    String expected = "log() invoked";
+    assertThat(messages).anyMatch(e -> e.contains(expected));
   }
 }

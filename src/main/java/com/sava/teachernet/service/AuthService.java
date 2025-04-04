@@ -9,6 +9,7 @@ import com.sava.teachernet.repository.UserRepository;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService implements UserDetailsService {
@@ -27,9 +29,12 @@ public class AuthService implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String login) {
+    log();
+    log.info("Loading a user by username");
     User user = userRepository.findByLogin(login)
         .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     GrantedAuthority authority = new SimpleGrantedAuthority(user.getRole());
+    log.info("user {} role is {}", user.getLogin(), user.getRole());
     return new org.springframework.security.core.userdetails.User(user.getLogin(),
         user.getPassword(), List.of(authority));
   }
@@ -50,5 +55,9 @@ public class AuthService implements UserDetailsService {
     } else {
       teacherService.create(data.name(), data.lastName(), newUser);
     }
+  }
+
+  public void log() {
+    log.info("log() invoked");
   }
 }
