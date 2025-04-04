@@ -1,5 +1,6 @@
 package com.sava.teachernet.controller.student;
 
+import com.sava.teachernet.dto.StudentDto;
 import com.sava.teachernet.model.Student;
 import com.sava.teachernet.model.Teacher;
 import com.sava.teachernet.service.StudentService;
@@ -38,7 +39,7 @@ public class StudentController {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-    Student student = studentService.getProfile(userDetails.getUsername());
+    StudentDto student = new StudentDto(studentService.getProfile(userDetails.getUsername()));
 
     model.addAttribute("student", student);
     return "student/profile";
