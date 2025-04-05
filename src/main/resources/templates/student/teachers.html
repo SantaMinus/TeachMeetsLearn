@@ -61,14 +61,12 @@
     <tr>
       <th>Name</th>
       <th>Lastname</th>
-      <th>Date Joined</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="teacher : ${teacherList}">
       <td th:text="${teacher.name}"></td>
       <td th:text="${teacher.lastName}"></td>
-      <td th:text="${teacher.dateJoined}"></td>
     </tr>
     </tbody>
   </table>
