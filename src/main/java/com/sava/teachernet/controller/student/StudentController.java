@@ -65,4 +65,3 @@ public class StudentController {
     return "redirect:/students/me/teachers";
   }
 }
-
