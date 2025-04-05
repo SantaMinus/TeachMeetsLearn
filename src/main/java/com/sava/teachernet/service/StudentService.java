@@ -1,8 +1,10 @@
 package com.sava.teachernet.service;
 
+import com.sava.teachernet.dto.StudentDto;
+import com.sava.teachernet.mapper.StudentMapper;
+import com.sava.teachernet.model.Student;
 import com.sava.teachernet.model.User;
 import com.sava.teachernet.repository.StudentRepository;
-import com.sava.teachernet.model.Student;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -10,36 +12,36 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class StudentService implements UserService<Student> {
+public class StudentService {
+
   private final StudentRepository studentRepository;
+  private final StudentMapper studentMapper;
 
-  @Override
-  public List<Student> getAll() {
-    return studentRepository.findAll();
+  public List<StudentDto> getAll() {
+    return studentRepository.findAll()
+        .stream()
+        .map(studentMapper::toDto)
+        .toList();
   }
 
-  @Override
-  public Student getProfile(String username) {
-    return studentRepository.findByUserLogin(username).orElse(null);
+  public StudentDto getProfile(String username) {
+    return studentMapper.toDto(studentRepository.findByUserLogin(username).orElse(null));
   }
 
-  @Override
-  public Student create(String name, String lastName, User user) {
+  public StudentDto create(String name, String lastName, User user) {
     Student student = Student.builder()
         .name(name)
         .lastName(lastName)
         .user(user)
         .dateJoined(LocalDate.now())
         .build();
-    return studentRepository.save(student);
+    return studentMapper.toDto(studentRepository.save(student));
   }
 
-  @Override
   public Student update(Student student) {
     return null;
   }
 
-  @Override
   public void delete(Student student) {
 
   }
