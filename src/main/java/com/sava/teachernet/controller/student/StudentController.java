@@ -1,7 +1,7 @@
 package com.sava.teachernet.controller.student;
 
 import com.sava.teachernet.dto.StudentDto;
-import com.sava.teachernet.dto.TeacherDto;
+import com.sava.teachernet.dto.TeacherShortDto;
 import com.sava.teachernet.service.StudentService;
 import java.util.List;
 import java.util.Set;
@@ -51,7 +51,7 @@ public class StudentController {
     UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
     StudentDto student = studentService.getProfile(userDetails.getUsername());
-    Set<TeacherDto> studentTeachers = student.getTeachers();
+    Set<TeacherShortDto> studentTeachers = student.getTeachers();
 
     model.addAttribute("teacherList", studentTeachers);
     return "student/teachers";

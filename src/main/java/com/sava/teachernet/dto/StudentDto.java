@@ -21,7 +21,7 @@ public class StudentDto {
   private String userLogin;
   private String lastName;
   private LocalDate dateJoined;
-  private Set<TeacherDto> teachers;
+  private Set<TeacherShortDto> teachers;
 
   public StudentDto(Student student) {
     this.id = student.getId();
