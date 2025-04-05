@@ -15,6 +15,7 @@ import static org.mockito.Mockito.when;
 
 import com.sava.teachernet.dto.SignUpDto;
 import com.sava.teachernet.exception.InvalidAuthException;
+import com.sava.teachernet.mapper.StudentMapper;
 import com.sava.teachernet.model.Student;
 import com.sava.teachernet.model.Teacher;
 import com.sava.teachernet.model.User;
@@ -34,7 +35,8 @@ class AuthServiceTest {
   private final UserRepository userRepository = mock(UserRepository.class);
   private final StudentRepository studentRepository = mock(StudentRepository.class);
   private final TeacherRepository teacherRepository = mock(TeacherRepository.class);
-  private final StudentService studentService = new StudentService(studentRepository);
+  private final StudentMapper mapper = mock(StudentMapper.class);
+  private final StudentService studentService = new StudentService(studentRepository, mapper);
   private final TeacherService teacherService = new TeacherService(teacherRepository);
   private final AuthService authService = new AuthService(userRepository, studentService,
       teacherService);
