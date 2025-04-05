@@ -23,8 +23,7 @@ public interface StudentMapper {
     return new TeacherShortDto(
         teacher.getId(),
         teacher.getName(),
-        teacher.getLastName(),
-        teacher.getDateJoined());
+        teacher.getLastName());
   }
 
   @IterableMapping(qualifiedByName = "toTeacherShortDto")

@@ -36,7 +36,8 @@ class AuthServiceTest {
   private final StudentRepository studentRepository = mock(StudentRepository.class);
   private final TeacherRepository teacherRepository = mock(TeacherRepository.class);
   private final StudentMapper mapper = mock(StudentMapper.class);
-  private final StudentService studentService = new StudentService(studentRepository, mapper);
+  private final StudentService studentService = new StudentService(studentRepository, mapper,
+      teacherRepository);
   private final TeacherService teacherService = new TeacherService(teacherRepository);
   private final AuthService authService = new AuthService(userRepository, studentService,
       teacherService);
