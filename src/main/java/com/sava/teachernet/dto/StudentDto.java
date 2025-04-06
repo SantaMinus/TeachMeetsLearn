@@ -1,8 +1,6 @@
 package com.sava.teachernet.dto;
 
-import com.sava.teachernet.model.Student;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,11 +20,4 @@ public class StudentDto {
   private String lastName;
   private LocalDate dateJoined;
   private Set<TeacherShortDto> teachers;
-
-  public StudentDto(Student student) {
-    this.id = student.getId();
-    this.name = student.getName();
-    this.lastName = student.getLastName();
-    this.teachers = new HashSet<>();
-  }
 }
