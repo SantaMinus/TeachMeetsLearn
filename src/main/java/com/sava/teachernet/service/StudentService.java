@@ -31,8 +31,8 @@ public class StudentService {
         .toList();
   }
 
-  public StudentDto getProfile(String username) {
-    return studentMapper.toDto(studentRepository.findByUserLogin(username).orElse(null));
+  public StudentDto getCurrentStudentProfile() {
+    return studentMapper.toDto(getCurrentStudent());
   }
 
   public StudentDto create(String name, String lastName, User user) {

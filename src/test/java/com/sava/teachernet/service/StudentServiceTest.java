@@ -1,5 +1,6 @@
 package com.sava.teachernet.service;
 
+import static com.sava.teachernet.config.auth.UserRole.STUDENT;
 import static com.sava.teachernet.util.Constants.TEST_LOGIN;
 import static com.sava.teachernet.util.Constants.TEST_USER_LAST_NAME;
 import static com.sava.teachernet.util.Constants.TEST_USER_NAME;
@@ -17,6 +18,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 @SpringBootTest
 class StudentServiceTest {
@@ -37,10 +41,17 @@ class StudentServiceTest {
   }
 
   @Test
-  void testGetProfile() {
+  void testGetCurrentStudentProfile() {
+    SecurityContextHolder.getContext()
+        .setAuthentication(new TestingAuthenticationToken(
+            User.builder()
+                .username(TEST_LOGIN)
+                .authorities(STUDENT.getValue())
+                .password("pass")
+                .build(), null));
     when(studentRepository.findByUserLogin(TEST_LOGIN)).thenReturn(Optional.of(buildTestStudent()));
 
-    StudentDto student = studentService.getProfile(TEST_LOGIN);
+    StudentDto student = studentService.getCurrentStudentProfile();
 
     assertEquals(TEST_LOGIN, student.getUserLogin());
     assertEquals(TEST_USER_NAME, student.getName());

@@ -6,9 +6,6 @@ import com.sava.teachernet.service.StudentService;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,10 +35,7 @@ public class StudentController {
 
   @GetMapping("/me/profile")
   public String showCurrentStudentProfile(Model model) {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-
-    StudentDto student = studentService.getProfile(userDetails.getUsername());
+    StudentDto student = studentService.getCurrentStudentProfile();
 
     model.addAttribute("student", student);
     return "student/profile";
@@ -49,11 +43,7 @@ public class StudentController {
 
   @GetMapping("/me/teachers")
   public String getCurrentStudentTeachers(Model model) {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-
-    StudentDto student = studentService.getProfile(userDetails.getUsername());
-    Set<TeacherShortDto> studentTeachers = student.getTeachers();
+    Set<TeacherShortDto> studentTeachers = studentService.getCurrentStudentProfile().getTeachers();
 
     model.addAttribute("teacherList", studentTeachers);
     return "student/teachers";
