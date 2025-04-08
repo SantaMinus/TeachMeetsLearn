@@ -4,8 +4,6 @@ import com.sava.teachernet.dto.StudentDto;
 import com.sava.teachernet.dto.TeacherShortDto;
 import com.sava.teachernet.model.Student;
 import com.sava.teachernet.model.Teacher;
-import java.util.Set;
-import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -19,13 +17,8 @@ public interface StudentMapper {
   StudentDto toDto(Student student);
 
   @Named("toTeacherShortDto")
-  default TeacherShortDto toTeacherShortDto(Teacher teacher) {
-    return new TeacherShortDto(
-        teacher.getId(),
-        teacher.getName(),
-        teacher.getLastName());
-  }
-
-  @IterableMapping(qualifiedByName = "toTeacherShortDto")
-  Set<TeacherShortDto> mapTeachers(Set<Teacher> teachers);
+  @Mapping(target = "id", source = "id")
+  @Mapping(target = "name", source = "name")
+  @Mapping(target = "lastName", source = "lastName")
+  TeacherShortDto toTeacherShortDto(Teacher teacher);
 }

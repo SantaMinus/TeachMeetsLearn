@@ -19,6 +19,7 @@ public class TestDataFactory {
         .name(TEST_USER_NAME)
         .lastName(TEST_USER_LAST_NAME)
         .user(User.builder()
+            .id(1L)
             .login(TEST_LOGIN)
             .build())
         .teachers(List.of(buildTestTeacher()))
