@@ -22,12 +22,12 @@ import com.sava.teachernet.model.User;
 import com.sava.teachernet.repository.StudentRepository;
 import com.sava.teachernet.repository.TeacherRepository;
 import com.sava.teachernet.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @SpringBootTest
 class AuthServiceTest {
@@ -47,7 +47,7 @@ class AuthServiceTest {
     when(userRepository.findByLogin(TEST_LOGIN))
         .thenReturn(Optional.of(
             User.builder()
-                .id(1).login(TEST_LOGIN).password(TEST_PASS).role(STUDENT.name()).build()));
+                .id(1L).login(TEST_LOGIN).password(TEST_PASS).role(STUDENT.name()).build()));
 
     UserDetails result = authService.loadUserByUsername(TEST_LOGIN);
 
@@ -58,9 +58,9 @@ class AuthServiceTest {
   }
 
   @Test()
-  void loadUserByUsernameThrowsUsernameNotFoundException() {
+  void loadUserByUsernameThrowsEntityNotFoundException() {
     assertThatThrownBy(() -> authService.loadUserByUsername("nonExistent"))
-        .isInstanceOf(UsernameNotFoundException.class).hasMessage("User not found");
+        .isInstanceOf(EntityNotFoundException.class).hasMessage("User not found");
   }
 
   @Test
@@ -70,7 +70,7 @@ class AuthServiceTest {
     when(userRepository.findByLogin(TEST_LOGIN))
         .thenReturn(Optional.of(
             User.builder()
-                .id(1).login(TEST_LOGIN).password(TEST_PASS).role(STUDENT.name()).build()));
+                .id(1L).login(TEST_LOGIN).password(TEST_PASS).role(STUDENT.name()).build()));
 
     assertThatThrownBy(() -> authService.signUp(signUpDto))
         .isInstanceOf(InvalidAuthException.class).hasMessage("Username already exists");
