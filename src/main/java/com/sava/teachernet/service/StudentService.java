@@ -31,6 +31,14 @@ public class StudentService {
         .toList();
   }
 
+  private Student getCurrentStudent() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+    return studentRepository.findByUserLogin(userDetails.getUsername())
+        .orElseThrow(() -> new EntityNotFoundException("Student not found"));
+  }
+
   public StudentDto getCurrentStudentProfile() {
     return studentMapper.toDto(getCurrentStudent());
   }
@@ -53,13 +61,5 @@ public class StudentService {
       student.getTeachers().add(teacher);
       studentRepository.save(student);
     }
-  }
-
-  private Student getCurrentStudent() {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-
-    return studentRepository.findByUserLogin(userDetails.getUsername())
-        .orElseThrow(() -> new EntityNotFoundException("Student not found"));
   }
 }
