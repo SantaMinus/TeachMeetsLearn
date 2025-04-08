@@ -64,7 +64,11 @@
     <p th:text="${student.dateJoined}"></p>
 
     <label>Teachers:</label>
-    <p th:text="${student.teachers}"></p>
+    <ul>
+      <li th:each="teacher : ${student.teachers}" class="teacher-item">
+        <p th:text="${teacher.name} + ' ' + ${teacher.lastName}"></p>
+      </li>
+    </ul>
   </div>
   <div class="profile-actions">
     <form th:action="@{/students/me/dashboard}" method="get">

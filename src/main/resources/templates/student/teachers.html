@@ -61,18 +61,19 @@
     <tr>
       <th>Name</th>
       <th>Lastname</th>
-      <th>Date Joined</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="teacher : ${teacherList}">
       <td th:text="${teacher.name}"></td>
       <td th:text="${teacher.lastName}"></td>
-      <td th:text="${teacher.dateJoined}"></td>
     </tr>
     </tbody>
   </table>
   <div class="teacher-list-actions">
+    <form th:action="@{/teachers}" method="get">
+      <button type="submit">Add a teacher</button>
+    </form>
     <form th:action="@{/students/me/dashboard}" method="get">
       <button type="submit">Back</button>
     </form>

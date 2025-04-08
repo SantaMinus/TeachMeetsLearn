@@ -6,6 +6,7 @@ import com.sava.teachernet.dto.SignUpDto;
 import com.sava.teachernet.exception.InvalidAuthException;
 import com.sava.teachernet.model.User;
 import com.sava.teachernet.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +28,7 @@ public class AuthService implements UserDetailsService {
   @Override
   public UserDetails loadUserByUsername(String login) {
     User user = userRepository.findByLogin(login)
-        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        .orElseThrow(() -> new EntityNotFoundException("User not found"));
     GrantedAuthority authority = new SimpleGrantedAuthority(user.getRole());
     return new org.springframework.security.core.userdetails.User(user.getLogin(),
         user.getPassword(), List.of(authority));

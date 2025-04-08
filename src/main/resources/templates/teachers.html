@@ -55,7 +55,12 @@
     <tr th:each="teacher : ${teacherList}">
       <td th:text="${teacher.name}"></td>
       <td th:text="${teacher.lastName}"></td>
-      <td th:text="${teacher.dateJoined}"></td>
+      <td>
+        <form th:action="@{/students/me/teachers}" method="post">
+          <input type="hidden" th:name="teacherId" th:value="${teacher.id}"/>
+          <button type="submit">Assign</button>
+        </form>
+      </td>
     </tr>
     </tbody>
   </table>

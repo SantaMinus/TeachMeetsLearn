@@ -1,17 +1,17 @@
 package com.sava.teachernet.controller.student;
 
-import com.sava.teachernet.model.Student;
-import com.sava.teachernet.model.Teacher;
+import com.sava.teachernet.dto.StudentDto;
+import com.sava.teachernet.dto.TeacherShortDto;
 import com.sava.teachernet.service.StudentService;
 import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/students")
@@ -22,7 +22,7 @@ public class StudentController {
 
   @GetMapping
   public String getStudents(Model model) {
-    List<Student> studentList = studentService.getAll();
+    List<StudentDto> studentList = studentService.getAll();
     model.addAttribute("studentList", studentList);
 
     return "students";
@@ -35,10 +35,7 @@ public class StudentController {
 
   @GetMapping("/me/profile")
   public String showCurrentStudentProfile(Model model) {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-
-    Student student = studentService.getProfile(userDetails.getUsername());
+    StudentDto student = studentService.getCurrentStudentProfile();
 
     model.addAttribute("student", student);
     return "student/profile";
@@ -46,14 +43,15 @@ public class StudentController {
 
   @GetMapping("/me/teachers")
   public String getCurrentStudentTeachers(Model model) {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-
-    Student student = studentService.getProfile(userDetails.getUsername());
-    List<Teacher> studentTeachers = student.getTeachers();
+    Set<TeacherShortDto> studentTeachers = studentService.getCurrentStudentProfile().getTeachers();
 
     model.addAttribute("teacherList", studentTeachers);
     return "student/teachers";
   }
-}
 
+  @PostMapping("/me/teachers")
+  public String assignTeacherToCurrentStudent(@RequestParam Long teacherId) {
+    studentService.assignTeacherToCurrentStudent(teacherId);
+    return "redirect:/students/me/teachers";
+  }
+}

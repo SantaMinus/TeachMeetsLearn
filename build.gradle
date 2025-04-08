@@ -17,6 +17,7 @@ repositories {
 
 dependencies {
   annotationProcessor 'org.projectlombok:lombok'
+  annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 
   compileOnly 'org.projectlombok:lombok'
 
@@ -29,6 +30,7 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.liquibase:liquibase-core'
   implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+  implementation 'org.mapstruct:mapstruct:1.6.3'
 
   runtimeOnly 'org.postgresql:postgresql'
 

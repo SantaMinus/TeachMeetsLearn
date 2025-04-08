@@ -15,18 +15,19 @@ import static org.mockito.Mockito.when;
 
 import com.sava.teachernet.dto.SignUpDto;
 import com.sava.teachernet.exception.InvalidAuthException;
+import com.sava.teachernet.mapper.StudentMapper;
 import com.sava.teachernet.model.Student;
 import com.sava.teachernet.model.Teacher;
 import com.sava.teachernet.model.User;
 import com.sava.teachernet.repository.StudentRepository;
 import com.sava.teachernet.repository.TeacherRepository;
 import com.sava.teachernet.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @SpringBootTest
 class AuthServiceTest {
@@ -34,7 +35,9 @@ class AuthServiceTest {
   private final UserRepository userRepository = mock(UserRepository.class);
   private final StudentRepository studentRepository = mock(StudentRepository.class);
   private final TeacherRepository teacherRepository = mock(TeacherRepository.class);
-  private final StudentService studentService = new StudentService(studentRepository);
+  private final StudentMapper mapper = mock(StudentMapper.class);
+  private final StudentService studentService = new StudentService(studentRepository, mapper,
+      teacherRepository);
   private final TeacherService teacherService = new TeacherService(teacherRepository);
   private final AuthService authService = new AuthService(userRepository, studentService,
       teacherService);
@@ -44,7 +47,7 @@ class AuthServiceTest {
     when(userRepository.findByLogin(TEST_LOGIN))
         .thenReturn(Optional.of(
             User.builder()
-                .id(1).login(TEST_LOGIN).password(TEST_PASS).role(STUDENT.name()).build()));
+                .id(1L).login(TEST_LOGIN).password(TEST_PASS).role(STUDENT.name()).build()));
 
     UserDetails result = authService.loadUserByUsername(TEST_LOGIN);
 
@@ -55,9 +58,9 @@ class AuthServiceTest {
   }
 
   @Test()
-  void loadUserByUsernameThrowsUsernameNotFoundException() {
+  void loadUserByUsernameThrowsEntityNotFoundException() {
     assertThatThrownBy(() -> authService.loadUserByUsername("nonExistent"))
-        .isInstanceOf(UsernameNotFoundException.class).hasMessage("User not found");
+        .isInstanceOf(EntityNotFoundException.class).hasMessage("User not found");
   }
 
   @Test
@@ -67,7 +70,7 @@ class AuthServiceTest {
     when(userRepository.findByLogin(TEST_LOGIN))
         .thenReturn(Optional.of(
             User.builder()
-                .id(1).login(TEST_LOGIN).password(TEST_PASS).role(STUDENT.name()).build()));
+                .id(1L).login(TEST_LOGIN).password(TEST_PASS).role(STUDENT.name()).build()));
 
     assertThatThrownBy(() -> authService.signUp(signUpDto))
         .isInstanceOf(InvalidAuthException.class).hasMessage("Username already exists");
