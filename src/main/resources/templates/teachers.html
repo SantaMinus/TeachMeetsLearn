@@ -48,7 +48,6 @@
     <tr>
       <th>Name</th>
       <th>Lastname</th>
-      <th>Date Joined</th>
     </tr>
     </thead>
     <tbody>
@@ -59,6 +58,11 @@
         <form th:action="@{/students/me/teachers}" method="post">
           <input type="hidden" th:name="teacherId" th:value="${teacher.id}"/>
           <button type="submit">Assign</button>
+        </form>
+        <form th:action="@{/students/me/teachers}" method="post">
+          <input type="hidden" name="_method" value="delete"/>
+          <input type="hidden" name="teacherId" th:value="${teacher.id}" />
+          <button type="submit">Remove</button>
         </form>
       </td>
     </tr>
