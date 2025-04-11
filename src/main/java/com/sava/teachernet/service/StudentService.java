@@ -62,4 +62,15 @@ public class StudentService {
       studentRepository.save(student);
     }
   }
+
+  public void unassignTeacherFromCurrentStudent(Long teacherId) {
+    Student student = getCurrentStudent();
+    List<Teacher> found = student.getTeachers()
+        .stream()
+        .filter(t -> t.getId().equals(teacherId))
+        .toList();
+    student.getTeachers().removeAll(found);
+    studentRepository.save(student);
+  }
 }
+
