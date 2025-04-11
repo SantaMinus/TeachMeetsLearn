@@ -28,6 +28,7 @@ public class TestDataFactory {
 
   public static Teacher buildTestTeacher() {
     return Teacher.builder()
+        .id(1L)
         .name(TEST_USER_NAME)
         .lastName(TEST_USER_LAST_NAME)
         .user(User.builder()

@@ -9,6 +9,7 @@ import static com.sava.teachernet.util.TestDataFactory.setAuth;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -113,5 +114,18 @@ class StudentServiceTest {
     studentService.assignTeacherToCurrentStudent(1L);
 
     verify(studentRepository, never()).save(any(Student.class));
+  }
+
+  @Test
+  void testUnassignTeacherFromCurrentStudentRemovesTeacher() {
+    Student currentStudent = buildTestStudent();
+    currentStudent.setTeachers(new ArrayList<>(currentStudent.getTeachers()));
+    when(studentRepository.findByUserLogin(TEST_LOGIN)).thenReturn(Optional.of(currentStudent));
+
+    studentService.unassignTeacherFromCurrentStudent(1L);
+
+    ArgumentCaptor<Student> studentArg = ArgumentCaptor.forClass(Student.class);
+    verify(studentRepository).save(studentArg.capture());
+    assertTrue(studentArg.getValue().getTeachers().isEmpty());
   }
 }
