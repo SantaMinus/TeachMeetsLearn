@@ -45,7 +45,7 @@
         @SimpleName='Main']"/>
     </properties>
   </rule>
-  <rule ref="category/java/bestpractices.xml/JUnitAssertionsShouldIncludeMessage">
+  <rule ref="category/java/bestpractices.xml/UnitTestAssertionsShouldIncludeMessage">
     <properties>
       <!-- The PMD check accepts only a string constant as the assertion message.
            This check uses a method call. -->
