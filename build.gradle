@@ -71,8 +71,6 @@ pmd {
 
 spotbugs {
   toolVersion = '4.9.3'
-  ignoreFailures = false
-  reportLevel = 'medium'
 }
 
 tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
