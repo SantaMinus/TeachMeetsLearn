@@ -71,8 +71,12 @@
     </tbody>
   </table>
   <div class="teacher-list-actions">
-    <form th:action="@{/teachers}" method="get">
-      <button type="submit">Add a teacher</button>
+    <form th:action="@{/teachers/search}" method="get" th:object="${searchDto}">
+      <input type="text" th:field="*{name}" placeholder="Name" />
+      <input type="text" th:field="*{lastName}" placeholder="Last Name" />
+      <input type="text" th:field="*{subject}" placeholder="Subject" />
+      <input type="text" th:field="*{location}" placeholder="Location" />
+      <button type="submit">Search</button>
     </form>
     <form th:action="@{/students/me/dashboard}" method="get">
       <button type="submit">Back</button>
