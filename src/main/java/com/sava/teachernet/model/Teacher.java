@@ -19,5 +19,7 @@ import lombok.experimental.SuperBuilder;
 public class Teacher extends AbstractUser {
 
   @ManyToMany(mappedBy = "teachers", fetch = FetchType.LAZY)
-  List<Student> students;
+  private List<Student> students;
+
+  private String subject;
 }

@@ -26,6 +26,7 @@ public abstract class AbstractUser {
   private String name;
   private String lastName;
   private LocalDate dateJoined;
+  private String location;
 
   @OneToOne
   @JoinColumn(name = "user_id", referencedColumnName = "id")
