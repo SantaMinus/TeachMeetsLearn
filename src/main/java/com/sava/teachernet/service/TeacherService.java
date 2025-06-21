@@ -1,5 +1,10 @@
 package com.sava.teachernet.service;
 
+import static com.sava.teachernet.service.TeacherSpecs.bySearchDto;
+
+import com.sava.teachernet.dto.SearchDto;
+import com.sava.teachernet.dto.TeacherDto;
+import com.sava.teachernet.mapper.TeacherMapper;
 import com.sava.teachernet.model.Teacher;
 import com.sava.teachernet.model.User;
 import com.sava.teachernet.repository.TeacherRepository;
@@ -13,10 +18,18 @@ import org.springframework.stereotype.Service;
 public class TeacherService implements UserService<Teacher> {
 
   private final TeacherRepository teacherRepository;
+  private final TeacherMapper teacherMapper;
 
   @Override
   public List<Teacher> getAll() {
     return teacherRepository.findAll();
+  }
+
+  public List<TeacherDto> getByQuery(SearchDto searchDto) {
+    List<Teacher> teachers = teacherRepository.findAll(bySearchDto(searchDto));
+    return teachers.stream()
+        .map(teacherMapper::toDto)
+        .toList();
   }
 
   @Override
