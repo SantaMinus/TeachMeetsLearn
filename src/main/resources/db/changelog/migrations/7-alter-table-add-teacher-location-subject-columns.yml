@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - changeSet:
+      id: alter-table-teacher-add-location-subject-columns
+      author: santaminus
+      preConditions:
+        - onFail: MARK_RAN
+      changes:
+        - addColumn:
+            tableName: teacher
+            columns:
+              - column:
+                  name: subject
+                  type: varchar(100)
+              - column:
+                  name: location
+                  type: varchar(50)

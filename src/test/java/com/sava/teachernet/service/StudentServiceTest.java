@@ -30,14 +30,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @SpringBootTest
 class StudentServiceTest {
 
-  @MockBean
+  @MockitoBean
   private StudentRepository studentRepository;
-  @MockBean
+  @MockitoBean
   private TeacherRepository teacherRepository;
   @Autowired
   private StudentMapper mapper;
@@ -53,8 +53,8 @@ class StudentServiceTest {
   void testGetAll() {
     when(studentRepository.findAll()).thenReturn(List.of(buildTestStudent()));
 
-    assertEquals(TEST_USER_NAME, studentService.getAll().get(0).getName());
-    assertEquals(TEST_USER_LAST_NAME, studentService.getAll().get(0).getLastName());
+    assertEquals(TEST_USER_NAME, studentService.getAll().getFirst().getName());
+    assertEquals(TEST_USER_LAST_NAME, studentService.getAll().getFirst().getLastName());
   }
 
   @Test
@@ -90,7 +90,7 @@ class StudentServiceTest {
     verify(studentRepository).save(studentArg.capture());
     assertFalse(studentArg.getValue().getTeachers().isEmpty());
     assertEquals(1, studentArg.getValue().getTeachers().size());
-    assertEquals("new", studentArg.getValue().getTeachers().get(0).getUser().getLogin());
+    assertEquals("new", studentArg.getValue().getTeachers().getFirst().getUser().getLogin());
   }
 
   @Test

@@ -3,15 +3,16 @@ package com.sava.teachernet.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
 @AllArgsConstructor
-@RequiredArgsConstructor
-public class TeacherShortDto {
+@NoArgsConstructor
+public class SearchDto {
 
-  private Long id;
   private String name;
   private String lastName;
+  private String subject;
+  private String location;
 }

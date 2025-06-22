@@ -1,5 +1,7 @@
 package com.sava.teachernet.controller.teacher;
 
+import com.sava.teachernet.dto.SearchDto;
+import com.sava.teachernet.dto.TeacherShortDto;
 import com.sava.teachernet.model.Student;
 import com.sava.teachernet.model.Teacher;
 import com.sava.teachernet.service.TeacherService;
@@ -11,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -26,6 +29,14 @@ public class TeacherController {
     model.addAttribute("teacherList", teacherList);
 
     return "teachers";
+  }
+
+  @GetMapping("/search")
+  public String getTeachersByQuery(@ModelAttribute("searchDto") SearchDto searchDto, Model model) {
+    List<TeacherShortDto> teacherList = teacherService.getByQuery(searchDto);
+    model.addAttribute("teacherList", teacherList);
+
+    return "searched-teachers";
   }
 
   @GetMapping("/me/dashboard")

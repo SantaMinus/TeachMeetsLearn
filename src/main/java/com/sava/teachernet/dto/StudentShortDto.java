@@ -2,10 +2,10 @@ package com.sava.teachernet.dto;
 
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-@Getter
+@Data
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class StudentShortDto {

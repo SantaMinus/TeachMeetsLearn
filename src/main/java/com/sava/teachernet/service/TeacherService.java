@@ -1,11 +1,17 @@
 package com.sava.teachernet.service;
 
+import static com.sava.teachernet.service.TeacherSpecs.bySearchDto;
+
+import com.sava.teachernet.dto.SearchDto;
+import com.sava.teachernet.dto.TeacherShortDto;
+import com.sava.teachernet.mapper.TeacherMapper;
 import com.sava.teachernet.model.Teacher;
 import com.sava.teachernet.model.User;
 import com.sava.teachernet.repository.TeacherRepository;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,10 +19,19 @@ import org.springframework.stereotype.Service;
 public class TeacherService implements UserService<Teacher> {
 
   private final TeacherRepository teacherRepository;
+  private final TeacherMapper teacherMapper;
 
   @Override
   public List<Teacher> getAll() {
     return teacherRepository.findAll();
+  }
+
+  public List<TeacherShortDto> getByQuery(SearchDto searchDto) {
+    Specification<Teacher> spec = bySearchDto(searchDto);
+    List<Teacher> teachers = teacherRepository.findAll(spec);
+    return teachers.stream()
+        .map(teacherMapper::toShortDto)
+        .toList();
   }
 
   @Override

@@ -1,5 +1,6 @@
 package com.sava.teachernet.controller.student;
 
+import com.sava.teachernet.dto.SearchDto;
 import com.sava.teachernet.dto.StudentDto;
 import com.sava.teachernet.dto.TeacherShortDto;
 import com.sava.teachernet.service.StudentService;
@@ -47,6 +48,7 @@ public class StudentController {
     Set<TeacherShortDto> studentTeachers = studentService.getCurrentStudentProfile().getTeachers();
 
     model.addAttribute("teacherList", studentTeachers);
+    model.addAttribute("searchDto", new SearchDto());
     return "student/teachers";
   }
 

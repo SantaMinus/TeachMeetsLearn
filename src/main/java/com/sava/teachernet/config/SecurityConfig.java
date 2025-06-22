@@ -30,6 +30,7 @@ public class SecurityConfig {
             .requestMatchers("/auth/**").permitAll()
             .requestMatchers("/students").permitAll()
             .requestMatchers("/teachers").permitAll()
+            .requestMatchers("/teachers/search").permitAll()
             .requestMatchers("/students/**").hasRole("STUDENT")
             .requestMatchers("/teachers/**").hasRole("TEACHER")
             .anyRequest().authenticated())
