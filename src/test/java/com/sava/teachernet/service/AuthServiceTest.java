@@ -9,7 +9,6 @@ import static com.sava.teachernet.util.Constants.TEST_USER_NAME;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -26,21 +25,29 @@ import jakarta.persistence.EntityNotFoundException;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @SpringBootTest
 class AuthServiceTest {
 
-  private final UserRepository userRepository = mock(UserRepository.class);
-  private final StudentRepository studentRepository = mock(StudentRepository.class);
-  private final TeacherRepository teacherRepository = mock(TeacherRepository.class);
-  private final StudentMapper mapper = mock(StudentMapper.class);
-  private final StudentService studentService = new StudentService(studentRepository, mapper,
-      teacherRepository);
-  private final TeacherService teacherService = new TeacherService(teacherRepository);
-  private final AuthService authService = new AuthService(userRepository, studentService,
-      teacherService);
+  @MockitoBean
+  private UserRepository userRepository;
+  @MockitoBean
+  private StudentRepository studentRepository;
+  @MockitoBean
+  private TeacherRepository teacherRepository;
+  @Mock
+  private StudentMapper mapper;
+  @Autowired
+  private StudentService studentService;
+  @Autowired
+  private TeacherService teacherService;
+  @Autowired
+  private AuthService authService;
 
   @Test
   void loadUserByUsername() {
