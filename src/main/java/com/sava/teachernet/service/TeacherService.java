@@ -3,7 +3,7 @@ package com.sava.teachernet.service;
 import static com.sava.teachernet.service.TeacherSpecs.bySearchDto;
 
 import com.sava.teachernet.dto.SearchDto;
-import com.sava.teachernet.dto.TeacherDto;
+import com.sava.teachernet.dto.TeacherShortDto;
 import com.sava.teachernet.mapper.TeacherMapper;
 import com.sava.teachernet.model.Teacher;
 import com.sava.teachernet.model.User;
@@ -25,10 +25,10 @@ public class TeacherService implements UserService<Teacher> {
     return teacherRepository.findAll();
   }
 
-  public List<TeacherDto> getByQuery(SearchDto searchDto) {
+  public List<TeacherShortDto> getByQuery(SearchDto searchDto) {
     List<Teacher> teachers = teacherRepository.findAll(bySearchDto(searchDto));
     return teachers.stream()
-        .map(teacherMapper::toDto)
+        .map(teacherMapper::toShortDto)
         .toList();
   }
 
