@@ -11,6 +11,7 @@ import com.sava.teachernet.repository.TeacherRepository;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,7 +27,8 @@ public class TeacherService implements UserService<Teacher> {
   }
 
   public List<TeacherShortDto> getByQuery(SearchDto searchDto) {
-    List<Teacher> teachers = teacherRepository.findAll(bySearchDto(searchDto));
+    Specification<Teacher> spec = bySearchDto(searchDto);
+    List<Teacher> teachers = teacherRepository.findAll(spec);
     return teachers.stream()
         .map(teacherMapper::toShortDto)
         .toList();

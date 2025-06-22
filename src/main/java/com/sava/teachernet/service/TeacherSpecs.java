@@ -9,11 +9,11 @@ import org.springframework.data.jpa.domain.Specification;
 public class TeacherSpecs {
 
   public static Specification<Teacher> bySearchDto(SearchDto dto) {
-    return Specification
-        .where(nameContains(dto.getName()))
-        .and(lastNameContains(dto.getLastName()))
-        .and(subjectContains(dto.getSubject()))
-        .and(locationContains(dto.getLocation()));
+    return dto == null ? Specification.where(null)
+        : Specification.where(nameContains(dto.getName()))
+            .and(lastNameContains(dto.getLastName()))
+            .and(subjectContains(dto.getSubject()))
+            .and(locationContains(dto.getLocation()));
   }
 
   private static Specification<Teacher> nameContains(String name) {
