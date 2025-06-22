@@ -67,6 +67,13 @@
     <tr th:each="teacher : ${teacherList}">
       <td th:text="${teacher.name}"></td>
       <td th:text="${teacher.lastName}"></td>
+      <td>
+        <form th:action="@{/students/me/teachers}" method="post">
+          <input type="hidden" name="_method" value="delete"/>
+          <input type="hidden" name="teacherId" th:value="${teacher.id}" />
+          <button type="submit">Remove</button>
+        </form>
+      </td>
     </tr>
     </tbody>
   </table>
