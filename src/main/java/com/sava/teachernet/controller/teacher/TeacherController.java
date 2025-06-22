@@ -1,7 +1,7 @@
 package com.sava.teachernet.controller.teacher;
 
 import com.sava.teachernet.dto.SearchDto;
-import com.sava.teachernet.dto.TeacherDto;
+import com.sava.teachernet.dto.TeacherShortDto;
 import com.sava.teachernet.model.Student;
 import com.sava.teachernet.model.Teacher;
 import com.sava.teachernet.service.TeacherService;
@@ -33,10 +33,10 @@ public class TeacherController {
 
   @GetMapping("/search")
   public String getTeachersByQuery(@ModelAttribute("searchDto") SearchDto searchDto, Model model) {
-    List<TeacherDto> teacherList = teacherService.getByQuery(searchDto);
+    List<TeacherShortDto> teacherList = teacherService.getByQuery(searchDto);
     model.addAttribute("teacherList", teacherList);
 
-    return "students/teachers";
+    return "searched-teachers";
   }
 
   @GetMapping("/me/dashboard")
