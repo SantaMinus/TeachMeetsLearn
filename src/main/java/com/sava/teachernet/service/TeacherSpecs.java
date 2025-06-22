@@ -18,24 +18,24 @@ public class TeacherSpecs {
 
   private static Specification<Teacher> nameContains(String name) {
     return isNullOrBlank(name) ? Specification.where(null)
-        : (root, query, cb) -> cb.like(cb.lower(root.get("name")), "%" + name.toLowerCase() + "%");
+        : (root, _, cb) -> cb.like(cb.lower(root.get("name")), "%" + name.toLowerCase() + "%");
   }
 
   private static Specification<Teacher> lastNameContains(String lastName) {
     return isNullOrBlank(lastName) ? Specification.where(null)
-        : (root, query, cb) -> cb.like(cb.lower(root.get("lastName")),
+        : (root, _, cb) -> cb.like(cb.lower(root.get("lastName")),
             "%" + lastName.toLowerCase() + "%");
   }
 
   private static Specification<Teacher> subjectContains(String subject) {
     return isNullOrBlank(subject) ? Specification.where(null)
-        : (root, query, cb) -> cb.like(cb.lower(root.get("subject")),
+        : (root, _, cb) -> cb.like(cb.lower(root.get("subject")),
             "%" + subject.toLowerCase() + "%");
   }
 
   private static Specification<Teacher> locationContains(String location) {
     return isNullOrBlank(location) ? Specification.where(null)
-        : (root, query, cb) -> cb.like(cb.lower(root.get("location")),
+        : (root, _, cb) -> cb.like(cb.lower(root.get("location")),
             "%" + location.toLowerCase() + "%");
   }
 
