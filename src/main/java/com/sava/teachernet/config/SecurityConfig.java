@@ -1,5 +1,7 @@
 package com.sava.teachernet.config;
 
+import com.sava.teachernet.repository.UserRepository;
+import com.sava.teachernet.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +13,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -21,6 +22,8 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+  private final UserRepository userRepository;
 
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -42,14 +45,14 @@ public class SecurityConfig {
             .loginPage("/auth/login")
             .loginProcessingUrl("/auth/login")
             .usernameParameter("login")
-            .passwordParameter("password")
             .defaultSuccessUrl("/", true)
             .permitAll())
         .oauth2Login(oauth2 -> oauth2
             .loginPage("/auth/login")
             .defaultSuccessUrl("/", true)
             .userInfoEndpoint(userInfo -> userInfo
-                .userService(oauth2UserService())))
+                .userService(oauth2UserService(userRepository)))
+            .successHandler((_, response, _) -> response.sendRedirect("/")))
         .logout(logout -> logout
             .logoutUrl("/logout")
             .logoutSuccessUrl("/auth/login?logout")
@@ -58,8 +61,9 @@ public class SecurityConfig {
   }
 
   @Bean
-  public OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService() {
-    return new DefaultOAuth2UserService();
+  public OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService(
+      UserRepository userRepository) {
+    return new CustomOAuth2UserService(userRepository);
   }
 
   @Bean
