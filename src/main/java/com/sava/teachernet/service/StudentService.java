@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -33,9 +34,16 @@ public class StudentService {
 
   private Student getCurrentStudent() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+    Object userDetails = authentication.getPrincipal();
 
-    return studentRepository.findByUserLogin(userDetails.getUsername())
+    String username = null;
+    if (userDetails instanceof UserDetails) {
+      username = ((UserDetails) userDetails).getUsername();
+    } else if (userDetails instanceof OAuth2User) {
+      username = ((OAuth2User) userDetails).getAttribute("login");
+    }
+
+    return studentRepository.findByUserLogin(username)
         .orElseThrow(() -> new EntityNotFoundException("Student not found"));
   }
 
