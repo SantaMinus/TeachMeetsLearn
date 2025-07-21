@@ -17,7 +17,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,6 +27,7 @@ public class AuthService implements UserDetailsService {
   private final UserRepository userRepository;
   private final StudentService studentService;
   private final TeacherService teacherService;
+  private final PasswordEncoder passwordEncoder;
 
   @Override
   public UserDetails loadUserByUsername(String login) {
@@ -44,7 +45,7 @@ public class AuthService implements UserDetailsService {
     if (userRepository.findByLogin(data.login()).isPresent()) {
       throw new InvalidAuthException("Username already exists");
     }
-    String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
+    String encryptedPassword = passwordEncoder.encode(data.password());
     User newUser = new User(data.login(), encryptedPassword, data.role().getValue());
     userRepository.save(newUser);
 
