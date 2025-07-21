@@ -50,10 +50,11 @@ public class SecurityConfig {
             .permitAll())
         .oauth2Login(oauth2 -> oauth2
             .loginPage(LOGIN_PATH)
-            .defaultSuccessUrl("/", true)
+            .defaultSuccessUrl("/oauth2/registration", true)
             .userInfoEndpoint(userInfo -> userInfo
                 .userService(oauth2UserService(userRepository)))
-            .successHandler((_, response, _) -> response.sendRedirect("/")))
+            .successHandler((_, response, _) ->
+                response.sendRedirect("/")))
         .logout(logout -> logout
             .logoutUrl("/logout")
             .logoutSuccessUrl("/auth/login?logout")

@@ -10,8 +10,11 @@ import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -49,6 +52,27 @@ public class AuthService implements UserDetailsService {
       studentService.create(data.name(), data.lastName(), newUser);
     } else {
       teacherService.create(data.name(), data.lastName(), newUser);
+    }
+  }
+
+  /**
+   * Refreshes the current authentication with updated authorities. This is typically called after a
+   * user's role has been updated.
+   */
+  public void refreshAuthentication() {
+    Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
+
+    if (currentAuth != null && currentAuth.isAuthenticated()) {
+      String username = currentAuth.getName();
+
+      UserDetails userDetails = loadUserByUsername(username);
+
+      Authentication newAuth = new UsernamePasswordAuthenticationToken(
+          userDetails,
+          currentAuth.getCredentials(),
+          userDetails.getAuthorities());
+
+      SecurityContextHolder.getContext().setAuthentication(newAuth);
     }
   }
 }

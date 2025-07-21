@@ -1,10 +1,16 @@
 package com.sava.teachernet.service;
 
+import com.sava.teachernet.config.auth.UserRole;
 import com.sava.teachernet.model.User;
 import com.sava.teachernet.repository.UserRepository;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -14,38 +20,42 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 @Transactional
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
   private final UserRepository userRepository;
-
-  public CustomOAuth2UserService(UserRepository userRepository) {
-    this.userRepository = userRepository;
-  }
 
   @Override
   public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
     OAuth2User oauth2User = super.loadUser(userRequest);
     Map<String, Object> attributes = oauth2User.getAttributes();
 
-    String email = (String) attributes.get("email");
-    if (email == null) {
-      email = oauth2User.getAttribute("login") + "@github.com";
+    String username;
+    if (attributes.get("email") == null) {
+      username = attributes.get("login") + "@github.com";
+    } else {
+      username = (String) attributes.get("email");
     }
 
-    Optional<User> existingUser = userRepository.findByLogin(email);
-
-    if (existingUser.isEmpty()) {
+    User user = userRepository.findByLogin(username).orElseGet(() -> {
       User newUser = new User();
-      newUser.setLogin(email);
-      // TODO: require a user to specify a role
-      newUser.setRole("ROLE_STUDENT");
+      newUser.setLogin(username);
+      newUser.setRole(UserRole.ROLE_PENDING_OAUTH2_REGISTRATION.name());
       // TODO: require a user to change password
       newUser.setPassword("{noop}oauth2user" + System.currentTimeMillis());
-      userRepository.save(newUser);
-    }
+      return userRepository.save(newUser);
+    });
 
-    return new DefaultOAuth2User(
-        List.of(() -> "ROLE_STUDENT"), attributes, "login");
+    List<GrantedAuthority> authorities =
+        user.getRole().equals(UserRole.ROLE_PENDING_OAUTH2_REGISTRATION.name())
+            ? List.of(new SimpleGrantedAuthority(UserRole.ROLE_PENDING_OAUTH2_REGISTRATION.name()))
+            : List.of(new SimpleGrantedAuthority(user.getRole()));
+
+    Authentication authentication = new UsernamePasswordAuthenticationToken(
+        oauth2User, null, authorities);
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+    return new DefaultOAuth2User(authorities, attributes, "login");
   }
 }
