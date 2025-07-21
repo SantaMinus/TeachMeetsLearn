@@ -34,13 +34,13 @@ public class StudentService {
 
   private Student getCurrentStudent() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    Object userDetails = authentication.getPrincipal();
+    Object principal = authentication.getPrincipal();
 
     String username = null;
-    if (userDetails instanceof UserDetails) {
-      username = ((UserDetails) userDetails).getUsername();
-    } else if (userDetails instanceof OAuth2User) {
-      username = ((OAuth2User) userDetails).getAttribute("login");
+    if (principal instanceof UserDetails userDetails) {
+      username = userDetails.getUsername();
+    } else if (principal instanceof OAuth2User oauth2User) {
+      username = oauth2User.getAttribute("login");
     }
 
     return studentRepository.findByUserLogin(username)

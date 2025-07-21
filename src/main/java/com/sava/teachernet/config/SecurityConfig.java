@@ -23,6 +23,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+  public static final String LOGIN_PATH = "/auth/login";
   private final UserRepository userRepository;
 
   @Bean
@@ -42,13 +43,13 @@ public class SecurityConfig {
                 .requestMatchers("/teachers/**").hasRole("TEACHER")
                 .anyRequest().authenticated())
         .formLogin(form -> form
-            .loginPage("/auth/login")
-            .loginProcessingUrl("/auth/login")
+            .loginPage(LOGIN_PATH)
+            .loginProcessingUrl(LOGIN_PATH)
             .usernameParameter("login")
             .defaultSuccessUrl("/", true)
             .permitAll())
         .oauth2Login(oauth2 -> oauth2
-            .loginPage("/auth/login")
+            .loginPage(LOGIN_PATH)
             .defaultSuccessUrl("/", true)
             .userInfoEndpoint(userInfo -> userInfo
                 .userService(oauth2UserService(userRepository)))
