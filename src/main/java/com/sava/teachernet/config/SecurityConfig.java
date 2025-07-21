@@ -54,7 +54,7 @@ public class SecurityConfig {
             .userInfoEndpoint(userInfo -> userInfo
                 .userService(oauth2UserService(userRepository)))
             .successHandler((_, response, _) ->
-                response.sendRedirect("/")))
+                response.sendRedirect("/oauth2/registration")))
         .logout(logout -> logout
             .logoutUrl("/logout")
             .logoutSuccessUrl("/auth/login?logout")
