@@ -57,15 +57,13 @@ public class AuthService implements UserDetailsService {
   }
 
   /**
-   * Refreshes the current authentication with updated authorities. This is typically called after a
-   * user's role has been updated.
+   * Refreshes the current authentication with updated authorities
    */
   public void refreshAuthentication() {
     Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
 
     if (currentAuth != null && currentAuth.isAuthenticated()) {
       String username = currentAuth.getName();
-
       UserDetails userDetails = loadUserByUsername(username);
 
       Authentication newAuth = new UsernamePasswordAuthenticationToken(
