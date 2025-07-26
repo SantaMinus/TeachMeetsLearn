@@ -1,5 +1,7 @@
 package com.sava.teachernet.config;
 
+import com.sava.teachernet.config.auth.CustomAuthenticationSuccessHandler;
+import com.sava.teachernet.config.auth.UserRole;
 import com.sava.teachernet.repository.UserRepository;
 import com.sava.teachernet.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class SecurityConfig {
 
   public static final String LOGIN_PATH = "/auth/login";
   private final UserRepository userRepository;
+  private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -39,22 +42,20 @@ public class SecurityConfig {
                 .requestMatchers("/students").permitAll()
                 .requestMatchers("/teachers").permitAll()
                 .requestMatchers("/teachers/search").permitAll()
-                .requestMatchers("/students/**").hasRole("STUDENT")
-                .requestMatchers("/teachers/**").hasRole("TEACHER")
+                .requestMatchers("/students/**").hasRole(UserRole.STUDENT.name())
+                .requestMatchers("/teachers/**").hasRole(UserRole.TEACHER.name())
                 .anyRequest().authenticated())
         .formLogin(form -> form
             .loginPage(LOGIN_PATH)
             .loginProcessingUrl(LOGIN_PATH)
             .usernameParameter("login")
-            .defaultSuccessUrl("/", true)
+            .successHandler(customAuthenticationSuccessHandler)
             .permitAll())
         .oauth2Login(oauth2 -> oauth2
             .loginPage(LOGIN_PATH)
-            .defaultSuccessUrl("/oauth2/registration", true)
             .userInfoEndpoint(userInfo -> userInfo
                 .userService(oauth2UserService(userRepository)))
-            .successHandler((_, response, _) ->
-                response.sendRedirect("/oauth2/registration")))
+            .successHandler(customAuthenticationSuccessHandler))
         .logout(logout -> logout
             .logoutUrl("/logout")
             .logoutSuccessUrl("/auth/login?logout")
