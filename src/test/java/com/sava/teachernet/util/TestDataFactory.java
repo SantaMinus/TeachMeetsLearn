@@ -5,6 +5,7 @@ import static com.sava.teachernet.util.Constants.TEST_LOGIN;
 import static com.sava.teachernet.util.Constants.TEST_USER_LAST_NAME;
 import static com.sava.teachernet.util.Constants.TEST_USER_NAME;
 
+import com.sava.teachernet.config.auth.UserRole;
 import com.sava.teachernet.model.Student;
 import com.sava.teachernet.model.Teacher;
 import com.sava.teachernet.model.User;
@@ -45,5 +46,13 @@ public class TestDataFactory {
                 .authorities(STUDENT.getValue())
                 .password("pass")
                 .build(), null));
+  }
+
+  public static User buildTestUser() {
+    return User.builder()
+        .login("testUser")
+        .password("password")
+        .role(UserRole.STUDENT.getValue())
+        .build();
   }
 }
