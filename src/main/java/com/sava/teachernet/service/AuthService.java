@@ -63,8 +63,7 @@ public class AuthService implements UserDetailsService {
     Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
 
     if (currentAuth != null && currentAuth.isAuthenticated()) {
-      String username = currentAuth.getName();
-      UserDetails userDetails = loadUserByUsername(username);
+      UserDetails userDetails = loadUserByUsername(currentAuth.getName());
 
       Authentication newAuth = new UsernamePasswordAuthenticationToken(
           userDetails,
