@@ -6,12 +6,16 @@ import static com.sava.teachernet.util.Constants.TEST_LOGIN;
 import static com.sava.teachernet.util.Constants.TEST_PASS;
 import static com.sava.teachernet.util.Constants.TEST_USER_LAST_NAME;
 import static com.sava.teachernet.util.Constants.TEST_USER_NAME;
+import static com.sava.teachernet.util.Constants.TEST_USER_USERNAME;
+import static com.sava.teachernet.util.TestDataFactory.buildTestUser;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.sava.teachernet.config.auth.UserRole;
 import com.sava.teachernet.dto.SignUpDto;
 import com.sava.teachernet.exception.InvalidAuthException;
 import com.sava.teachernet.mapper.StudentMapper;
@@ -22,13 +26,20 @@ import com.sava.teachernet.repository.StudentRepository;
 import com.sava.teachernet.repository.TeacherRepository;
 import com.sava.teachernet.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @SpringBootTest
@@ -40,6 +51,10 @@ class AuthServiceTest {
   private StudentRepository studentRepository;
   @MockitoBean
   private TeacherRepository teacherRepository;
+  @MockitoBean
+  private PasswordEncoder passwordEncoder;
+  @MockitoBean
+  private ClientRegistrationRepository clientRegistrationRepository;
   @Mock
   private StudentMapper mapper;
   @Autowired
@@ -48,6 +63,12 @@ class AuthServiceTest {
   private TeacherService teacherService;
   @Autowired
   private AuthService authService;
+
+  @AfterEach
+  void tearDown() {
+    userRepository.deleteAll();
+    SecurityContextHolder.clearContext();
+  }
 
   @Test
   void loadUserByUsername() {
@@ -126,5 +147,22 @@ class AuthServiceTest {
     verify(teacherRepository).save(teacherArg.capture());
     assertEquals(TEST_USER_NAME, teacherArg.getValue().getName());
     assertEquals(TEST_USER_LAST_NAME, teacherArg.getValue().getLastName());
+  }
+
+  @Test
+  void refreshAuthentication() {
+    Authentication initialAuth = new UsernamePasswordAuthenticationToken(
+        TEST_USER_USERNAME, "password", List.of(() -> "ROLE_OLD_ROLE"));
+    SecurityContextHolder.getContext().setAuthentication(initialAuth);
+    when(userRepository.findByLogin(TEST_USER_USERNAME)).thenReturn(Optional.of(buildTestUser()));
+
+    authService.refreshAuthentication();
+
+    Authentication finalAuth = SecurityContextHolder.getContext().getAuthentication();
+    assertNotNull(finalAuth);
+    assertEquals(TEST_USER_USERNAME, finalAuth.getName());
+    assertTrue(finalAuth.getAuthorities().stream()
+        .anyMatch(a -> a.getAuthority().equals(UserRole.STUDENT.getValue())));
+    assertEquals(1, finalAuth.getAuthorities().size());
   }
 }

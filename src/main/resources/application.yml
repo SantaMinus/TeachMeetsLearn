@@ -8,3 +8,13 @@ spring:
     driverClassName: org.postgresql.Driver
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: ${GITHUB_CLIENT_ID}
+            client-secret: ${GITHUB_CLIENT_SECRET}
+          google:
+            client-id: your-google-client-id
+            client-secret: your-google-client-secret

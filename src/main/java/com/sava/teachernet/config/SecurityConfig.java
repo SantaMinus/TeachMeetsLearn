@@ -1,7 +1,9 @@
 package com.sava.teachernet.config;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
+import com.sava.teachernet.config.auth.CustomAuthenticationSuccessHandler;
+import com.sava.teachernet.config.auth.UserRole;
+import com.sava.teachernet.repository.UserRepository;
+import com.sava.teachernet.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +15,9 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -20,22 +25,48 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+  public static final String LOGIN_PATH = "/auth/login";
+  private final UserRepository userRepository;
+  private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+
   @Bean
-  SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-    return httpSecurity
+  SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
         .csrf(AbstractHttpConfigurer::disable)
-        .sessionManagement(
-            session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
-        .authorizeHttpRequests(authorize -> authorize
-            .requestMatchers("/auth/**").permitAll()
-            .requestMatchers("/students").permitAll()
-            .requestMatchers("/teachers").permitAll()
-            .requestMatchers("/teachers/search").permitAll()
-            .requestMatchers("/students/**").hasRole("STUDENT")
-            .requestMatchers("/teachers/**").hasRole("TEACHER")
-            .anyRequest().authenticated())
-        .formLogin(withDefaults())
-        .build();
+        .sessionManagement(session -> session
+            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+        .authorizeHttpRequests(auth ->
+            auth
+                .requestMatchers("/auth/**", "/login", "/oauth2/**", "/webjars/**",
+                    "/css/**", "/js/**").permitAll()
+                .requestMatchers("/students").permitAll()
+                .requestMatchers("/teachers").permitAll()
+                .requestMatchers("/teachers/search").permitAll()
+                .requestMatchers("/students/**").hasRole(UserRole.STUDENT.name())
+                .requestMatchers("/teachers/**").hasRole(UserRole.TEACHER.name())
+                .anyRequest().authenticated())
+        .formLogin(form -> form
+            .loginPage(LOGIN_PATH)
+            .loginProcessingUrl(LOGIN_PATH)
+            .usernameParameter("login")
+            .successHandler(customAuthenticationSuccessHandler)
+            .permitAll())
+        .oauth2Login(oauth2 -> oauth2
+            .loginPage(LOGIN_PATH)
+            .userInfoEndpoint(userInfo -> userInfo
+                .userService(oauth2UserService(userRepository)))
+            .successHandler(customAuthenticationSuccessHandler))
+        .logout(logout -> logout
+            .logoutUrl("/logout")
+            .logoutSuccessUrl("/auth/login?logout")
+            .permitAll());
+    return http.build();
+  }
+
+  @Bean
+  public OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService(
+      UserRepository userRepository) {
+    return new CustomOAuth2UserService(userRepository);
   }
 
   @Bean

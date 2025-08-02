@@ -10,11 +10,14 @@ import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,6 +27,7 @@ public class AuthService implements UserDetailsService {
   private final UserRepository userRepository;
   private final StudentService studentService;
   private final TeacherService teacherService;
+  private final PasswordEncoder passwordEncoder;
 
   @Override
   public UserDetails loadUserByUsername(String login) {
@@ -41,7 +45,7 @@ public class AuthService implements UserDetailsService {
     if (userRepository.findByLogin(data.login()).isPresent()) {
       throw new InvalidAuthException("Username already exists");
     }
-    String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
+    String encryptedPassword = passwordEncoder.encode(data.password());
     User newUser = new User(data.login(), encryptedPassword, data.role().getValue());
     userRepository.save(newUser);
 
@@ -49,6 +53,24 @@ public class AuthService implements UserDetailsService {
       studentService.create(data.name(), data.lastName(), newUser);
     } else {
       teacherService.create(data.name(), data.lastName(), newUser);
+    }
+  }
+
+  /**
+   * Refreshes the current authentication with updated authorities
+   */
+  public void refreshAuthentication() {
+    Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
+
+    if (currentAuth != null && currentAuth.isAuthenticated()) {
+      UserDetails userDetails = loadUserByUsername(currentAuth.getName());
+
+      Authentication newAuth = new UsernamePasswordAuthenticationToken(
+          userDetails,
+          currentAuth.getCredentials(),
+          userDetails.getAuthorities());
+
+      SecurityContextHolder.getContext().setAuthentication(newAuth);
     }
   }
 }

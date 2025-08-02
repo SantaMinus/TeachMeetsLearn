@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @SpringBootTest
@@ -27,6 +28,8 @@ class TeacherServiceTest {
 
   @MockitoBean
   private TeacherRepository teacherRepository;
+  @MockitoBean
+  private ClientRegistrationRepository clientRegistrationRepository;
   @Autowired
   private TeacherMapper teacherMapper;
   @Autowired

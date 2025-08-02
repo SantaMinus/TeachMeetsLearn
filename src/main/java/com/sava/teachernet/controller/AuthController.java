@@ -39,7 +39,7 @@ public class AuthController {
   @PostMapping("/login")
   public ResponseEntity<Void> signIn(SignInDto data) {
     var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
-    var authUser = authenticationManager.authenticate(usernamePassword);
+    authenticationManager.authenticate(usernamePassword);
     return ResponseEntity.ok().build();
   }
 }
