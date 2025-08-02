@@ -7,4 +7,5 @@ public class Constants {
   public static final String TEST_USER_NAME = "Test";
   public static final String TEST_USER_LAST_NAME = "User";
   public static final String TEST_USER_USERNAME = "testUser";
+  public static final String REDIRECT_HOME_URL = "redirect:/";
 }
