@@ -9,11 +9,13 @@ import com.sava.teachernet.config.auth.UserRole;
 import com.sava.teachernet.model.Student;
 import com.sava.teachernet.model.Teacher;
 import com.sava.teachernet.model.User;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
@@ -27,7 +29,7 @@ public class TestDataFactory {
             .id(1L)
             .login(TEST_LOGIN)
             .build())
-        .teachers(List.of(buildTestTeacher()))
+        .teachers(new ArrayList<>(List.of(buildTestTeacher())))
         .build();
   }
 
@@ -43,13 +45,24 @@ public class TestDataFactory {
   }
 
   public static void setAuth() {
-    SecurityContextHolder.getContext()
-        .setAuthentication(new TestingAuthenticationToken(
-            org.springframework.security.core.userdetails.User.builder()
-                .username(TEST_LOGIN)
-                .authorities(STUDENT.getValue())
-                .password("pass")
-                .build(), null));
+    setAuth(false);
+  }
+
+  public static void setAuth(boolean isOauth) {
+    if (isOauth) {
+      OAuth2User oAuth2User = createOauth2User(TEST_LOGIN, STUDENT.name());
+      SecurityContextHolder.getContext()
+          .setAuthentication(
+              new OAuth2AuthenticationToken(oAuth2User, oAuth2User.getAuthorities(), "test-client"));
+    } else {
+      SecurityContextHolder.getContext()
+          .setAuthentication(new TestingAuthenticationToken(
+              org.springframework.security.core.userdetails.User.builder()
+                  .username(TEST_LOGIN)
+                  .authorities(STUDENT.getValue())
+                  .password("pass")
+                  .build(), null));
+    }
   }
 
   public static User buildTestUser() {

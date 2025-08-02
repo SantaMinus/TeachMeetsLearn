@@ -4,7 +4,7 @@ import static com.sava.teachernet.util.Constants.TEST_LOGIN;
 import static com.sava.teachernet.util.Constants.TEST_USER_LAST_NAME;
 import static com.sava.teachernet.util.Constants.TEST_USER_NAME;
 import static com.sava.teachernet.util.TestDataFactory.buildTestStudent;
-import static com.sava.teachernet.util.TestDataFactory.buildTestTeacher;
+import static com.sava.teachernet.util.TestDataFactory.createOauth2User;
 import static com.sava.teachernet.util.TestDataFactory.setAuth;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,6 +19,7 @@ import com.sava.teachernet.dto.StudentDto;
 import com.sava.teachernet.mapper.StudentMapper;
 import com.sava.teachernet.model.Student;
 import com.sava.teachernet.model.Teacher;
+import com.sava.teachernet.model.User;
 import com.sava.teachernet.repository.StudentRepository;
 import com.sava.teachernet.repository.TeacherRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -30,6 +31,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @SpringBootTest
@@ -39,6 +41,8 @@ class StudentServiceTest {
   private StudentRepository studentRepository;
   @MockitoBean
   private TeacherRepository teacherRepository;
+  @MockitoBean
+  private ClientRegistrationRepository clientRegistrationRepository;
   @Autowired
   private StudentMapper mapper;
   @Autowired
@@ -50,11 +54,31 @@ class StudentServiceTest {
   }
 
   @Test
+  void testCreate() {
+    User user = User.builder().login(TEST_LOGIN).build();
+    Student student = buildTestStudent();
+    when(studentRepository.save(any(Student.class))).thenReturn(student);
+
+    StudentDto result = studentService.create(TEST_USER_NAME, TEST_USER_LAST_NAME, user);
+
+    ArgumentCaptor<Student> studentArg = ArgumentCaptor.forClass(Student.class);
+    verify(studentRepository).save(studentArg.capture());
+    assertEquals(TEST_USER_NAME, studentArg.getValue().getName());
+    assertEquals(TEST_USER_LAST_NAME, studentArg.getValue().getLastName());
+    assertEquals(TEST_LOGIN, studentArg.getValue().getUser().getLogin());
+    assertEquals(TEST_LOGIN, result.getUserLogin());
+  }
+
+  @Test
   void testGetAll() {
     when(studentRepository.findAll()).thenReturn(List.of(buildTestStudent()));
 
-    assertEquals(TEST_USER_NAME, studentService.getAll().getFirst().getName());
-    assertEquals(TEST_USER_LAST_NAME, studentService.getAll().getFirst().getLastName());
+    List<StudentDto> students = studentService.getAll();
+    StudentDto student = students.getFirst();
+
+    assertEquals(TEST_USER_NAME, student.getName());
+    assertEquals(TEST_USER_LAST_NAME, student.getLastName());
+    assertFalse(student.getTeachers().isEmpty());
   }
 
   @Test
@@ -67,6 +91,27 @@ class StudentServiceTest {
     assertEquals(TEST_USER_NAME, student.getName());
     assertEquals(TEST_USER_LAST_NAME, student.getLastName());
     assertFalse(student.getTeachers().isEmpty());
+  }
+
+  @Test
+  void testGetCurrentStudentProfileWithOauth2User() {
+    setAuth(true);
+    createOauth2User(TEST_USER_NAME, "ROLE_STUDENT");
+    when(studentRepository.findByUserLogin(TEST_LOGIN))
+        .thenReturn(Optional.of(buildTestStudent()));
+
+    StudentDto student = studentService.getCurrentStudentProfile();
+
+    assertEquals(TEST_LOGIN, student.getUserLogin());
+  }
+
+  @Test
+  void testGetCurrentStudentProfileThrowsExceptionWhenNotFound() {
+    when(studentRepository.findByUserLogin(TEST_LOGIN)).thenReturn(Optional.empty());
+
+    assertThatThrownBy(() -> studentService.getCurrentStudentProfile())
+        .isInstanceOf(EntityNotFoundException.class)
+        .hasMessage("Student not found");
   }
 
   @Test
@@ -88,41 +133,58 @@ class StudentServiceTest {
 
     ArgumentCaptor<Student> studentArg = ArgumentCaptor.forClass(Student.class);
     verify(studentRepository).save(studentArg.capture());
-    assertFalse(studentArg.getValue().getTeachers().isEmpty());
-    assertEquals(1, studentArg.getValue().getTeachers().size());
-    assertEquals("new", studentArg.getValue().getTeachers().getFirst().getUser().getLogin());
+    List<Teacher> teachers = studentArg.getValue().getTeachers();
+    assertFalse(teachers.isEmpty());
+    assertEquals(1, teachers.size());
+    assertEquals("new", teachers.getFirst().getUser().getLogin());
+  }
+
+  @Test
+  void testAssignTeacherToCurrentStudentDoesNotAddExistingTeacher() {
+    Student currentStudent = buildTestStudent();
+    Teacher existingTeacher = currentStudent.getTeachers().getFirst();
+    when(studentRepository.findByUserLogin(TEST_LOGIN))
+        .thenReturn(Optional.of(currentStudent));
+    when(teacherRepository.findById(existingTeacher.getId()))
+        .thenReturn(Optional.of(existingTeacher));
+
+    studentService.assignTeacherToCurrentStudent(existingTeacher.getId());
+
+    verify(studentRepository, never()).save(any(Student.class));
   }
 
   @Test
   void testAssignTeacherToCurrentStudentThrowsEntityNotFoundException() {
-    Student currentStudent = buildTestStudent();
-    when(studentRepository.findByUserLogin(TEST_LOGIN)).thenReturn(Optional.of(currentStudent));
+    when(studentRepository.findByUserLogin(TEST_LOGIN))
+        .thenReturn(Optional.of(buildTestStudent()));
     when(teacherRepository.findById(1L)).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() ->
-        studentService.assignTeacherToCurrentStudent(1L))
-        .isInstanceOf(EntityNotFoundException.class).hasMessage("Teacher not found");
+    assertThatThrownBy(() -> studentService.assignTeacherToCurrentStudent(1L))
+        .isInstanceOf(EntityNotFoundException.class)
+        .hasMessage("Teacher not found");
     verify(studentRepository, never()).save(any(Student.class));
   }
 
   @Test
-  void testAssignTeacherToCurrentStudentDoesntAddExistingTeacher() {
+  void testUnassignTeacherFromCurrentStudent() {
     Student currentStudent = buildTestStudent();
+    Teacher teacherToRemove = currentStudent.getTeachers().getFirst();
     when(studentRepository.findByUserLogin(TEST_LOGIN)).thenReturn(Optional.of(currentStudent));
-    when(teacherRepository.findById(1L)).thenReturn(Optional.of(buildTestTeacher()));
 
-    studentService.assignTeacherToCurrentStudent(1L);
+    studentService.unassignTeacherFromCurrentStudent(teacherToRemove.getId());
 
-    verify(studentRepository, never()).save(any(Student.class));
+    ArgumentCaptor<Student> studentArg = ArgumentCaptor.forClass(Student.class);
+    verify(studentRepository).save(studentArg.capture());
+    assertTrue(studentArg.getValue().getTeachers().isEmpty());
   }
 
   @Test
-  void testUnassignTeacherFromCurrentStudentRemovesTeacher() {
+  void testUnassignTeacherFromCurrentStudentWhenNotAssigned() {
     Student currentStudent = buildTestStudent();
-    currentStudent.setTeachers(new ArrayList<>(currentStudent.getTeachers()));
+    currentStudent.setTeachers(new ArrayList<>());
     when(studentRepository.findByUserLogin(TEST_LOGIN)).thenReturn(Optional.of(currentStudent));
 
-    studentService.unassignTeacherFromCurrentStudent(1L);
+    studentService.unassignTeacherFromCurrentStudent(99L);
 
     ArgumentCaptor<Student> studentArg = ArgumentCaptor.forClass(Student.class);
     verify(studentRepository).save(studentArg.capture());
