@@ -10,8 +10,12 @@ import com.sava.teachernet.model.Student;
 import com.sava.teachernet.model.Teacher;
 import com.sava.teachernet.model.User;
 import java.util.List;
+import java.util.Map;
 import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 public class TestDataFactory {
 
@@ -54,5 +58,11 @@ public class TestDataFactory {
         .password("password")
         .role(UserRole.STUDENT.getValue())
         .build();
+  }
+
+  public static OAuth2User createOauth2User(String username, String role) {
+    Map<String, Object> attributes = Map.of("login", username);
+    var authorities = List.of(new SimpleGrantedAuthority(role));
+    return new DefaultOAuth2User(authorities, attributes, "login");
   }
 }

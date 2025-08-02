@@ -22,6 +22,7 @@ dependencies {
   annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 
   compileOnly 'org.projectlombok:lombok'
+  compileOnly 'com.google.guava:guava:32.0.1-android'
 
   developmentOnly 'org.springframework.boot:spring-boot-devtools'
 

@@ -1,5 +1,6 @@
 package com.sava.teachernet.service;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.sava.teachernet.config.auth.UserRole;
 import com.sava.teachernet.model.User;
 import com.sava.teachernet.repository.UserRepository;
@@ -29,6 +30,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
   @Override
   public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
     OAuth2User oauth2User = super.loadUser(userRequest);
+    return processOAuth2User(oauth2User);
+  }
+
+  @VisibleForTesting
+  OAuth2User processOAuth2User(OAuth2User oauth2User) {
     Map<String, Object> attributes = oauth2User.getAttributes();
 
     String username = attributes.get("login").toString();
