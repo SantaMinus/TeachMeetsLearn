@@ -1,6 +1,8 @@
 package com.sava.teachernet.controller;
 
 import static com.sava.teachernet.util.Constants.REDIRECT_HOME_URL;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -81,5 +83,7 @@ class OAuth2RegistrationControllerTest {
             .flashAttr("roleSelection", roleSelection))
         .andExpect(status().isOk())
         .andExpect(view().name("oauth2/select-role"));
+
+    verify(oAuth2RegistrationService, never()).processRoleSelection(any(RoleSelectionDto.class));
   }
 }
