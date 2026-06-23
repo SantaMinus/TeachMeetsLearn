@@ -22,7 +22,6 @@ dependencies {
   annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 
   compileOnly 'org.projectlombok:lombok'
-  compileOnly 'com.google.guava:guava:32.0.1-android'
 
   developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
@@ -35,6 +34,7 @@ dependencies {
   implementation 'org.liquibase:liquibase-core'
   implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
   implementation 'org.mapstruct:mapstruct:1.6.3'
+  implementation 'com.google.guava:guava:32.0.1-jre'
 
   runtimeOnly 'org.postgresql:postgresql'
 
