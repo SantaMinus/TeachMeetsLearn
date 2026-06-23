@@ -54,7 +54,7 @@ public class SecurityConfig {
         .oauth2Login(oauth2 -> oauth2
             .loginPage(LOGIN_PATH)
             .userInfoEndpoint(userInfo -> userInfo
-                .userService(oauth2UserService(userRepository)))
+                .userService(oauth2UserService(userRepository, passwordEncoder())))
             .successHandler(customAuthenticationSuccessHandler))
         .logout(logout -> logout
             .logoutUrl("/logout")
@@ -65,8 +65,8 @@ public class SecurityConfig {
 
   @Bean
   public OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService(
-      UserRepository userRepository) {
-    return new CustomOAuth2UserService(userRepository);
+      UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    return new CustomOAuth2UserService(userRepository, passwordEncoder);
   }
 
   @Bean

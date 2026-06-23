@@ -20,6 +20,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,6 +28,9 @@ class CustomOAuth2UserServiceTest {
 
   @Mock
   private UserRepository userRepository;
+
+  @Mock
+  private PasswordEncoder passwordEncoder;
 
   @InjectMocks
   private CustomOAuth2UserService customOAuth2UserService;
@@ -61,6 +65,7 @@ class CustomOAuth2UserServiceTest {
     when(userRepository.findByLogin(username)).thenReturn(Optional.empty());
     when(userRepository.save(any(User.class)))
         .thenAnswer(invocation -> invocation.getArgument(0));
+    when(passwordEncoder.encode(any())).thenReturn("encoded-password");
 
     OAuth2User result = customOAuth2UserService.processOAuth2User(oAuth2User);
 
@@ -71,5 +76,7 @@ class CustomOAuth2UserServiceTest {
     User savedUser = userArgumentCaptor.getValue();
     assertThat(savedUser.getLogin()).isEqualTo(username);
     assertThat(savedUser.getRole()).isEqualTo(ROLE_PENDING_OAUTH2_REGISTRATION.name());
+    assertThat(savedUser.getPassword()).isEqualTo("encoded-password");
+    verify(passwordEncoder).encode(any());
   }
 }
