@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Your Role - Teach Meets Learn</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .role-selection-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+        .role-option {
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .role-option:hover {
+            border-color: #0d6efd;
+            background-color: #f8f9ff;
+        }
+        .role-option.active {
+            border-color: #0d6efd;
+            background-color: #f0f7ff;
+        }
+        .role-option input[type="radio"] {
+            display: none;
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="role-selection-container">
+                    <h2 class="text-center mb-4">Select Your Role</h2>
+                    <p class="text-muted text-center mb-4">Please choose how you'd like to use Teach Meets Learn</p>
+                    
+                    <form th:action="@{/oauth2/select-role}" method="post" th:object="${roleSelection}" id="roleForm">
+                        <div class="mb-3">
+                            <div class="role-option" onclick="selectRole('ROLE_STUDENT')">
+                                <input type="radio" id="role_student" th:field="*{role}" value="ROLE_STUDENT" required>
+                                <h5>👨‍🎓 I'm a Student</h5>
+                                <p class="text-muted mb-0">I want to learn from teachers and take courses.</p>
+                            </div>
+                            
+                            <div class="role-option" onclick="selectRole('ROLE_TEACHER')">
+                                <input type="radio" id="role_teacher" th:field="*{role}" value="ROLE_TEACHER">
+                                <h5>👨‍🏫 I'm a Teacher</h5>
+                                <p class="text-muted mb-0">I want to create and manage courses for students.</p>
+                            </div>
+                        </div>
+                        
+                        <div th:if="${#fields.hasErrors('role')}" class="alert alert-danger">
+                            <span th:errors="*{role}"></span>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-submit mt-3">Continue</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function selectRole(role) {
+            // Update radio button
+            document.getElementById('role_' + role.toLowerCase().replace('role_', '')).checked = true;
+            
+            // Update UI
+            document.querySelectorAll('.role-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+        }
+        
+        // Initialize active state on page load if a role is already selected
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectedRole = document.querySelector('input[name="role"]:checked');
+            if (selectedRole) {
+                selectedRole.closest('.role-option').classList.add('active');
+            }
+        });
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
