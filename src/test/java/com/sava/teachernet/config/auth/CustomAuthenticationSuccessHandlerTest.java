@@ -3,6 +3,8 @@ package com.sava.teachernet.config.auth;
 import static com.sava.teachernet.config.auth.CustomAuthenticationSuccessHandler.REDIRECT_OAUTH2_REGISTRATION;
 import static com.sava.teachernet.config.auth.UserRole.ROLE_PENDING_OAUTH2_REGISTRATION;
 import static com.sava.teachernet.config.auth.UserRole.STUDENT;
+import static com.sava.teachernet.config.auth.UserRole.TEACHER;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -63,5 +65,45 @@ class CustomAuthenticationSuccessHandlerTest {
     successHandler.onAuthenticationSuccess(request, response, authentication);
 
     verify(redirectStrategy).sendRedirect(request, response, "/");
+  }
+
+  @Test
+  void onAuthenticationSuccess_whenTeacherRole_thenUsesDefaultBehavior()
+      throws IOException, ServletException {
+    successHandler.setDefaultTargetUrl("/");
+    when(authentication.getAuthorities())
+        .thenReturn((Collection) List.of(new SimpleGrantedAuthority(TEACHER.getValue())));
+
+    successHandler.onAuthenticationSuccess(request, response, authentication);
+
+    verify(redirectStrategy).sendRedirect(request, response, "/");
+    // Must NOT redirect to the OAuth2 registration page for a fully registered teacher
+    verify(redirectStrategy, never()).sendRedirect(request, response, REDIRECT_OAUTH2_REGISTRATION);
+  }
+
+  @Test
+  void onAuthenticationSuccess_whenMultipleAuthoritiesIncludingPending_thenRedirectsToRegistration()
+      throws IOException, ServletException {
+    // If the user somehow holds the pending authority alongside another, pending wins
+    when(authentication.getAuthorities())
+        .thenReturn((Collection) List.of(
+            new SimpleGrantedAuthority(STUDENT.getValue()),
+            new SimpleGrantedAuthority(ROLE_PENDING_OAUTH2_REGISTRATION.getValue())));
+
+    successHandler.onAuthenticationSuccess(request, response, authentication);
+
+    verify(redirectStrategy).sendRedirect(request, response, REDIRECT_OAUTH2_REGISTRATION);
+  }
+
+  @Test
+  void onAuthenticationSuccess_whenEmptyAuthorities_thenUsesDefaultBehavior()
+      throws IOException, ServletException {
+    successHandler.setDefaultTargetUrl("/");
+    when(authentication.getAuthorities()).thenReturn(List.of());
+
+    successHandler.onAuthenticationSuccess(request, response, authentication);
+
+    verify(redirectStrategy).sendRedirect(request, response, "/");
+    verify(redirectStrategy, never()).sendRedirect(request, response, REDIRECT_OAUTH2_REGISTRATION);
   }
 }
