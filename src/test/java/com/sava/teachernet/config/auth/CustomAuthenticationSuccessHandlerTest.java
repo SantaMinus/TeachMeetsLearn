@@ -99,7 +99,7 @@ class CustomAuthenticationSuccessHandlerTest {
   void onAuthenticationSuccess_whenEmptyAuthorities_thenUsesDefaultBehavior()
       throws IOException, ServletException {
     successHandler.setDefaultTargetUrl("/");
-    when(authentication.getAuthorities()).thenReturn((Collection) List.of());
+    when(authentication.getAuthorities()).thenReturn(List.of());
 
     successHandler.onAuthenticationSuccess(request, response, authentication);
 

@@ -54,10 +54,6 @@ class OAuth2RegistrationServiceTest {
     SecurityContextHolder.clearContext();
   }
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // shouldShowRoleSelectionForm
-  // ─────────────────────────────────────────────────────────────────────────
-
   @Test
   void shouldShowRoleSelectionForm_returnsTrueWhenPendingRegistration() {
     String login = "ghuser";
@@ -105,10 +101,6 @@ class OAuth2RegistrationServiceTest {
         .isInstanceOf(IllegalStateException.class)
         .hasMessage("User not found after OAuth2 authentication");
   }
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // processRoleSelection – STUDENT
-  // ─────────────────────────────────────────────────────────────────────────
 
   @Test
   void processRoleSelection_assignsStudentRoleAndCreatesStudentEntity() {
@@ -179,14 +171,9 @@ class OAuth2RegistrationServiceTest {
     verify(authService, never()).refreshAuthentication();
   }
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // createRoleEntity – name parsing edge cases
-  // ─────────────────────────────────────────────────────────────────────────
-
   @Test
   void processRoleSelection_usesLoginAsFirstNameWhenNameAttributeIsNull() {
     String login = "namenull";
-    // name attribute absent from attributes map
     setOAuth2PrincipalNoName(login);
     User user = pendingUser(login);
     when(userRepository.findByLogin(login)).thenReturn(Optional.of(user));
@@ -197,7 +184,6 @@ class OAuth2RegistrationServiceTest {
 
     oAuth2RegistrationService.processRoleSelection(dto);
 
-    // firstName == login, lastName == ""
     verify(studentService).create(eq(login), eq(""), any(User.class));
   }
 
@@ -217,27 +203,22 @@ class OAuth2RegistrationServiceTest {
     verify(studentService).create(eq("Madonna"), eq(""), any(User.class));
   }
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // Helper methods
-  // ─────────────────────────────────────────────────────────────────────────
-
   private void setOAuth2Principal(String login) {
-    OAuth2User oAuth2User = buildOAuth2User(login, Map.of("login", login));
+    OAuth2User oAuth2User = buildOAuth2User(Map.of("login", login));
     setOAuth2AuthToken(oAuth2User);
   }
 
   private void setOAuth2PrincipalWithName(String login, String name) {
-    OAuth2User oAuth2User = buildOAuth2User(login, Map.of("login", login, "name", name));
+    OAuth2User oAuth2User = buildOAuth2User(Map.of("login", login, "name", name));
     setOAuth2AuthToken(oAuth2User);
   }
 
   private void setOAuth2PrincipalNoName(String login) {
-    // Only "login" attribute – no "name" key at all
-    OAuth2User oAuth2User = buildOAuth2User(login, Map.of("login", login));
+    OAuth2User oAuth2User = buildOAuth2User(Map.of("login", login));
     setOAuth2AuthToken(oAuth2User);
   }
 
-  private OAuth2User buildOAuth2User(String login, Map<String, Object> attributes) {
+  private OAuth2User buildOAuth2User(Map<String, Object> attributes) {
     return new DefaultOAuth2User(
         List.of(new SimpleGrantedAuthority(ROLE_PENDING_OAUTH2_REGISTRATION.getValue())),
         attributes,

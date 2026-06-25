@@ -52,9 +52,7 @@ class CustomOAuth2UserServiceTest {
     User existingUser = new User();
     existingUser.setLogin(username);
     existingUser.setRole(role);
-
     OAuth2User oAuth2User = createOauth2User(username, role);
-
     when(userRepository.findByLogin(username)).thenReturn(Optional.of(existingUser));
 
     OAuth2User result = customOAuth2UserService.processOAuth2User(oAuth2User);
@@ -87,13 +85,14 @@ class CustomOAuth2UserServiceTest {
     verify(passwordEncoder).encode(any());
   }
 
-  @Test
-  void processOAuth2UserSetsAuthenticationInSecurityContext() {
+  @ParameterizedTest
+  @ValueSource(strings = {"TEACHER", "STUDENT"})
+  void processOAuth2UserSetsAuthenticationInSecurityContext(String role) {
     String username = "ctxuser";
     User existingUser = new User();
     existingUser.setLogin(username);
-    existingUser.setRole("ROLE_STUDENT");
-    OAuth2User oAuth2User = createOauth2User(username, "ROLE_STUDENT");
+    existingUser.setRole(role);
+    OAuth2User oAuth2User = createOauth2User(username, role);
     when(userRepository.findByLogin(username)).thenReturn(Optional.of(existingUser));
 
     customOAuth2UserService.processOAuth2User(oAuth2User);
@@ -101,7 +100,7 @@ class CustomOAuth2UserServiceTest {
     assertThat(SecurityContextHolder.getContext().getAuthentication()).isNotNull();
     assertThat(SecurityContextHolder.getContext().getAuthentication().getAuthorities())
         .extracting("authority")
-        .contains("ROLE_STUDENT");
+        .contains(role);
   }
 
   @Test
